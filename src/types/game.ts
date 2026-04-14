@@ -72,6 +72,7 @@ export interface AIAnalysisResult {
 export type EventPhase =
   | 'npcDialogue'
   | 'playerInput1'
+  | 'loadingNpcReaction'
   | 'npcFollowUp'
   | 'playerInput2'
   | 'aiAnalyzing'

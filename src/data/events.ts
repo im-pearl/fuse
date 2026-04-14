@@ -63,18 +63,6 @@ export const days: DayData[] = [
     events: [
       {
         id: 'd2e1',
-        npc: 'parkDirector',
-        dialogue: {
-          ko: 'ㅇ대리는 결혼 안 해?',
-          en: "Aren't you getting married?",
-        },
-        followUpDialogue: {
-          ko: '요즘 젊은 애들은 왜 결혼을 안 하려고 하는지 모르겠어. 나 때는 다 했는데.',
-          en: "I don't get why young people don't want to get married these days. Everyone did in my time.",
-        },
-      },
-      {
-        id: 'd2e2',
         npc: 'leeManager',
         dialogue: {
           ko: '내가 이거 언제 이렇게 하라고 했어?',
@@ -115,6 +103,18 @@ export const days: DayData[] = [
         followUpDialogue: {
           ko: '고마워~ 역시 넌 착해. 나중에 밥 살게! (안 삼)',
           en: "Thanks~ You're so nice. I'll buy you food later! (won't)",
+        },
+      },
+      {
+        id: 'd2e4b',
+        npc: 'parkDirector',
+        dialogue: {
+          ko: 'ㅇ대리는 결혼 안 해?',
+          en: "Aren't you getting married?",
+        },
+        followUpDialogue: {
+          ko: '요즘 젊은 애들은 왜 결혼을 안 하려고 하는지 모르겠어. 나 때는 다 했는데.',
+          en: "I don't get why young people don't want to get married these days. Everyone did in my time.",
         },
       },
       {
