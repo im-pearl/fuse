@@ -56,7 +56,7 @@ Language for comment: ${locale === 'ko' ? 'Korean' : 'English'}
 Analyze the player's emotional state and respond in JSON.`;
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 300,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
