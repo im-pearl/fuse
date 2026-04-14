@@ -13,8 +13,6 @@
   },
   "prologue": {
     "line1": "1592, Gyeongju.",
-    "line2": "A Japanese soldier finds a metal ball that rolled toward him.",
-    "line3": "He thinks it's nothing and inspects it.",
     "start": "Start Game"
   },
   "game": {
@@ -30,22 +28,22 @@
     "message": "Your emotions have exploded."
   },
   "ending": {
-    "line1": "In 1592, a Japanese soldier looked at it and thought:",
-    "line2": "\"It's nothing.\"",
-    "line3": "Your {emotion} was the same.",
-    "line4": "Nobody knew.",
-    "gameOver": "GAME OVER",
-    "lifeNotOver": "LIFE IS NOT OVER",
-    "finalMessage": "Before it explodes, let it melt.",
-    "restart": "Play Again",
-    "emotions": {
-      "anxiety": "anxiety",
-      "burden": "burden",
-      "injustice": "injustice",
-      "helplessness": "helplessness",
-      "selfBlame": "self-blame",
-      "anger": "anger",
-      "default": "emotions"
-    }
+    "screen1": {
+      "line1": "In 1592, soldiers saw the Bigyeokjincheonroe and thought:",
+      "line2": "Doesn't look like much.",
+      "line3": "In 2026, the people around you looked at you and thought:",
+      "line4": "Doesn't seem like a big deal.",
+      "line5": "But.."
+    },
+    "screen2": {
+      "line1": "Explosions always come",
+      "line2": "later, suddenly"
+    },
+    "screen3": {
+      "line1": "GAME OVER",
+      "line2": "YOUR FEELINGS ARE NOT CLEARED",
+      "line3": "Before it explodes, let it melt."
+    },
+    "restart": "Play Again"
   }
 }

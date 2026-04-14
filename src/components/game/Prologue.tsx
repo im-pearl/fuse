@@ -11,7 +11,7 @@ export default function Prologue() {
   const setPhase = useGameStore((s) => s.setPhase);
   const { t } = useTranslation();
 
-  const lines = [t('prologue.line1'), t('prologue.line2'), t('prologue.line3')];
+  const lines = [t('prologue.line1')];
 
   useEffect(() => {
     if (lineIndex < lines.length) {
