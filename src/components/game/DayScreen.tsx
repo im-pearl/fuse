@@ -5,8 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from '@/i18n/useTranslation';
 import { days } from '@/data/events';
-import { LocaleText } from '@/types/game';
+import { LocaleText, NpcId, Locale } from '@/types/game';
 import { fillNamePlaceholders } from '@/lib/nameUtils';
+import { npcs } from '@/data/npcs';
 import DialogueBox from './DialogueBox';
 import PlayerInput from './PlayerInput';
 import BombDisplay from './BombDisplay';
@@ -15,7 +16,7 @@ import { analyzeEmotion } from '@/lib/ai';
 
 function LoadingDots() {
   return (
-    <div className="flex gap-1 justify-center py-8">
+    <div className="flex gap-1 justify-center py-6">
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
@@ -24,6 +25,21 @@ function LoadingDots() {
           transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
         />
       ))}
+    </div>
+  );
+}
+
+// 타이핑 없이 NPC 대사를 정적으로 표시 (입력 중에 위에 고정)
+function StaticDialogue({ npcId, text, locale }: { npcId: NpcId; text: LocaleText; locale: Locale }) {
+  const npc = npcs[npcId];
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-sm font-bold" style={{ color: npc.color }}>
+        {npc.name[locale]}
+      </span>
+      <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+        <p className="text-white/70 text-sm leading-relaxed">{text[locale]}</p>
+      </div>
     </div>
   );
 }
@@ -54,7 +70,6 @@ export default function DayScreen() {
   const event = dayData.events[currentEventIndex];
   const isSystem = event.npc === 'system';
 
-  // 플레이스홀더를 실제 이름으로 채운 LocaleText 생성
   const fillText = (text: LocaleText): LocaleText => ({
     ko: fillNamePlaceholders(text.ko, playerSurname, playerFirstName),
     en: fillNamePlaceholders(text.en, playerSurname, playerFirstName),
@@ -136,79 +151,139 @@ export default function DayScreen() {
     advanceEvent();
   };
 
+  const filledDialogue = fillText(event.dialogue);
+  const filledInnerThought = event.innerThought ? fillText(event.innerThought) : undefined;
   const followUpText = generatedFollowUp ?? fillText(event.followUpDialogue);
+
+  // 결과 오버레이는 전체 영역 사용
+  const isShowingResult = eventPhase === 'showResult';
 
   return (
     <div className="flex flex-col h-full">
       {/* Day 헤더 */}
-      <div className="py-3 px-4 border-b border-white/10">
+      <div className="py-3 px-4 border-b border-white/10 shrink-0">
         <span className="text-white/40 text-xs tracking-widest">
           {t('game.day', { day: String(currentDay + 1) })}
         </span>
       </div>
 
-      {/* 폭탄 슬롯 표시 */}
-      <div className="px-4 py-2">
+      {/* 폭탄 슬롯 */}
+      <div className="px-4 py-2 shrink-0">
         <BombDisplay bombs={bombs} locale={locale} newBombCount={newBombCount} />
       </div>
 
-      {/* 메인 콘텐츠 */}
-      <div className="flex-1 flex flex-col justify-end px-4 pb-4 gap-4 overflow-y-auto">
-        <AnimatePresence mode="wait">
-          {eventPhase === 'npcDialogue' && (
-            <motion.div key="dialogue" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <DialogueBox
-                npcId={event.npc}
-                text={fillText(event.dialogue)}
-                locale={locale}
-                innerThought={event.innerThought ? fillText(event.innerThought) : undefined}
-                onComplete={handleDialogueComplete}
-              />
-            </motion.div>
-          )}
+      {isShowingResult ? (
+        /* 결과 코멘트 — 전체 영역 */
+        <div className="flex-1 flex items-center justify-center px-4 pb-4">
+          <CommentOverlay comment={aiComment} onDone={handleResultDone} />
+        </div>
+      ) : (
+        <>
+          {/* 상단: NPC 대사 영역 — 하단 정렬, AnimatePresence 없이 즉시 전환 */}
+          <div className="flex-1 flex flex-col justify-end px-4 pb-3 overflow-y-auto">
+            {/* NPC 첫 대사 — 타이핑 (탭으로 넘김) */}
+            {eventPhase === 'npcDialogue' && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <DialogueBox
+                  npcId={event.npc}
+                  text={filledDialogue}
+                  locale={locale}
+                  innerThought={filledInnerThought}
+                  onComplete={handleDialogueComplete}
+                />
+              </motion.div>
+            )}
 
-          {eventPhase === 'playerInput1' && (
-            <motion.div key="input1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <PlayerInput onSubmit={handleInput1} />
-            </motion.div>
-          )}
+            {/* 1차 입력 중 / NPC 반응 로딩 중 — 첫 대사 정적 표시 */}
+            {(eventPhase === 'playerInput1' || eventPhase === 'loadingNpcReaction') && (
+              <>
+                <StaticDialogue npcId={event.npc} text={filledDialogue} locale={locale} />
+                {filledInnerThought && (
+                  <p className="text-white/30 text-xs italic text-center mt-3">
+                    {filledInnerThought[locale]}
+                  </p>
+                )}
+              </>
+            )}
 
-          {eventPhase === 'loadingNpcReaction' && (
-            <motion.div key="loadingNpc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <LoadingDots />
-            </motion.div>
-          )}
+            {/* NPC 리액션 대사 — 타이핑 (탭으로 넘김) */}
+            {eventPhase === 'npcFollowUp' && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <DialogueBox
+                  npcId={event.npc}
+                  text={followUpText}
+                  locale={locale}
+                  onComplete={handleFollowUpComplete}
+                />
+              </motion.div>
+            )}
 
-          {eventPhase === 'npcFollowUp' && (
-            <motion.div key="followup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <DialogueBox
-                npcId={event.npc}
-                text={followUpText}
-                locale={locale}
-                onComplete={handleFollowUpComplete}
-              />
-            </motion.div>
-          )}
+            {/* 2차 입력 중 / AI 분석 중 — 리액션 대사 정적 표시 */}
+            {(eventPhase === 'playerInput2' || eventPhase === 'aiAnalyzing') && (
+              <StaticDialogue npcId={event.npc} text={followUpText} locale={locale} />
+            )}
+          </div>
 
-          {eventPhase === 'playerInput2' && (
-            <motion.div key="input2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <PlayerInput onSubmit={handleInput2} />
-            </motion.div>
-          )}
+          {/* 하단: 입력 / 로딩 영역 */}
+          <div className="px-4 pb-4 pt-3 shrink-0 border-t border-white/5">
+            <AnimatePresence mode="wait">
+              {eventPhase === 'playerInput1' && (
+                <motion.div
+                  key="input1"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <PlayerInput onSubmit={handleInput1} />
+                </motion.div>
+              )}
 
-          {eventPhase === 'aiAnalyzing' && isLoading && (
-            <motion.div key="loadingAI" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <LoadingDots />
-            </motion.div>
-          )}
+              {eventPhase === 'loadingNpcReaction' && (
+                <motion.div
+                  key="loadingNpc"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <LoadingDots />
+                </motion.div>
+              )}
 
-          {eventPhase === 'showResult' && (
-            <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <CommentOverlay comment={aiComment} onDone={handleResultDone} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              {eventPhase === 'playerInput2' && (
+                <motion.div
+                  key="input2"
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <PlayerInput onSubmit={handleInput2} />
+                </motion.div>
+              )}
+
+              {eventPhase === 'aiAnalyzing' && isLoading && (
+                <motion.div
+                  key="loadingAI"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <LoadingDots />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </>
+      )}
     </div>
   );
 }
