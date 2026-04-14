@@ -82,12 +82,15 @@ export const useGameStore = create<GameState>((set, get) => ({
   applyAIResult: (deltas, comment) => {
     const state = get();
     const newEmotions = applyEmotionDeltas(state.emotions, deltas);
+    const existingEmotionTypes = new Set(state.bombs.map((b) => b.emotion));
     const newBombs = [
       ...state.bombs,
-      ...deltas.map((d) => ({
-        emotion: d.emotion,
-        acquiredAt: `d${state.currentDay + 1}e${state.currentEventIndex + 1}`,
-      })),
+      ...deltas
+        .filter((d) => !existingEmotionTypes.has(d.emotion))
+        .map((d) => ({
+          emotion: d.emotion,
+          acquiredAt: `d${state.currentDay + 1}e${state.currentEventIndex + 1}`,
+        })),
     ];
 
     const explosion = checkExplosion(newEmotions);

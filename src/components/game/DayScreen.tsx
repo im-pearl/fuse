@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from '@/i18n/useTranslation';
 import { days } from '@/data/events';
-import { LocaleText, NpcId, Locale } from '@/types/game';
+import { LocaleText, NpcId, Locale, EmotionType } from '@/types/game';
 import { fillNamePlaceholders } from '@/lib/nameUtils';
 import { npcs } from '@/data/npcs';
 import DialogueBox from './DialogueBox';
@@ -63,7 +63,7 @@ export default function DayScreen() {
   } = useGameStore();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const [newBombCount, setNewBombCount] = useState(0);
+  const [newBombEmotions, setNewBombEmotions] = useState<EmotionType[]>([]);
   const [generatedFollowUp, setGeneratedFollowUp] = useState<LocaleText | null>(null);
 
   const dayData = days[currentDay];
@@ -130,23 +130,27 @@ export default function DayScreen() {
         playerFirstName,
         locale,
       });
-      setNewBombCount(result.emotions.length);
+      const existingEmotionTypes = new Set(bombs.map((b) => b.emotion));
+      setNewBombEmotions(
+        result.emotions.map((d) => d.emotion).filter((e) => !existingEmotionTypes.has(e))
+      );
       applyAIResult(result.emotions, result.comment);
     } catch {
+      const existingEmotionTypes = new Set(bombs.map((b) => b.emotion));
+      if (!existingEmotionTypes.has('burden')) setNewBombEmotions(['burden']);
       applyAIResult(
         [{ emotion: 'burden', amount: 20 }],
         locale === 'ko'
           ? '말하지 못한 마음이 조금 더 무거워졌습니다.'
           : 'The words left unsaid grew a little heavier.'
       );
-      setNewBombCount(1);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleResultDone = () => {
-    setNewBombCount(0);
+    setNewBombEmotions([]);
     setGeneratedFollowUp(null);
     advanceEvent();
   };
@@ -169,7 +173,7 @@ export default function DayScreen() {
 
       {/* 폭탄 슬롯 */}
       <div className="px-4 py-2 shrink-0">
-        <BombDisplay bombs={bombs} locale={locale} newBombCount={newBombCount} />
+        <BombDisplay bombs={bombs} locale={locale} newBombEmotions={newBombEmotions} />
       </div>
 
       {isShowingResult ? (

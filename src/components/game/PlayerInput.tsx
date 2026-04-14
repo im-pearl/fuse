@@ -31,7 +31,9 @@ export default function PlayerInput({ onSubmit }: Props) {
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSubmit();
+        }}
         placeholder={t('game.inputPlaceholder')}
         className="flex-1 bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white text-sm outline-none focus:border-white/40 transition-colors placeholder:text-white/20"
         autoFocus

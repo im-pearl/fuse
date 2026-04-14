@@ -13,8 +13,6 @@
   },
   "prologue": {
     "line1": "1592년, 경주.",
-    "line2": "왜군 병사가 굴러온 쇠공을 발견한다.",
-    "line3": "별거 아닌 줄 알고 구경한다.",
     "start": "게임 시작"
   },
   "game": {
@@ -30,22 +28,22 @@
     "message": "당신의 감정이 터졌습니다."
   },
   "ending": {
-    "line1": "1592년, 왜군은 이것을 보고 생각했다.",
-    "line2": "\"별거 아니네.\"",
-    "line3": "당신의 {emotion}도 그랬습니다.",
-    "line4": "아무도 몰랐습니다.",
-    "gameOver": "GAME OVER",
-    "lifeNotOver": "LIFE IS NOT OVER",
-    "finalMessage": "터지기 전에, 녹으세요.",
-    "restart": "다시 시작",
-    "emotions": {
-      "anxiety": "불안",
-      "burden": "부담감",
-      "injustice": "억울함",
-      "helplessness": "무력감",
-      "selfBlame": "자괴감",
-      "anger": "분노",
-      "default": "감정"
-    }
+    "screen1": {
+      "line1": "1592년, 왜군들은 비격진천뢰를 보고 생각했다.",
+      "line2": "별 거 아닌 것 같은데?",
+      "line3": "2026년, 당신의 주변 사람들도 당신을 보고 생각했다.",
+      "line4": "별 일 아닌 것 같은데?",
+      "line5": "그러나.."
+    },
+    "screen2": {
+      "line1": "폭발은 늘",
+      "line2": "나중에, 갑자기"
+    },
+    "screen3": {
+      "line1": "GAME OVER",
+      "line2": "YOUR FEELINGS ARE NOT CLEARED",
+      "line3": "터지기 전에, 녹이세요"
+    },
+    "restart": "다시 시작"
   }
 }
