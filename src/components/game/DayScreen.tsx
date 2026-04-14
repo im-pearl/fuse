@@ -179,75 +179,57 @@ export default function DayScreen() {
         </div>
       ) : (
         <>
-          {/* 상단: NPC 대사 영역 (항상 표시) */}
-          <div className="flex-1 px-4 pt-4 overflow-y-auto">
-            <AnimatePresence mode="wait">
-              {/* NPC 첫 대사 — 타이핑 (탭으로 넘김) */}
-              {eventPhase === 'npcDialogue' && (
-                <motion.div
-                  key="npcDialogue"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <DialogueBox
-                    npcId={event.npc}
-                    text={filledDialogue}
-                    locale={locale}
-                    innerThought={filledInnerThought}
-                    onComplete={handleDialogueComplete}
-                  />
-                </motion.div>
-              )}
+          {/* 상단: NPC 대사 영역 — 하단 정렬, AnimatePresence 없이 즉시 전환 */}
+          <div className="flex-1 flex flex-col justify-end px-4 pb-3 overflow-y-auto">
+            {/* NPC 첫 대사 — 타이핑 (탭으로 넘김) */}
+            {eventPhase === 'npcDialogue' && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <DialogueBox
+                  npcId={event.npc}
+                  text={filledDialogue}
+                  locale={locale}
+                  innerThought={filledInnerThought}
+                  onComplete={handleDialogueComplete}
+                />
+              </motion.div>
+            )}
 
-              {/* 1차 입력 중 / NPC 반응 로딩 중 — 첫 대사 정적 표시 */}
-              {(eventPhase === 'playerInput1' || eventPhase === 'loadingNpcReaction') && (
-                <motion.div
-                  key="staticDialogue1"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <StaticDialogue npcId={event.npc} text={filledDialogue} locale={locale} />
-                  {filledInnerThought && (
-                    <p className="text-white/30 text-xs italic text-center mt-3">
-                      {filledInnerThought[locale]}
-                    </p>
-                  )}
-                </motion.div>
-              )}
+            {/* 1차 입력 중 / NPC 반응 로딩 중 — 첫 대사 정적 표시 */}
+            {(eventPhase === 'playerInput1' || eventPhase === 'loadingNpcReaction') && (
+              <>
+                <StaticDialogue npcId={event.npc} text={filledDialogue} locale={locale} />
+                {filledInnerThought && (
+                  <p className="text-white/30 text-xs italic text-center mt-3">
+                    {filledInnerThought[locale]}
+                  </p>
+                )}
+              </>
+            )}
 
-              {/* NPC 리액션 대사 — 타이핑 (탭으로 넘김) */}
-              {eventPhase === 'npcFollowUp' && (
-                <motion.div
-                  key="npcFollowUp"
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <DialogueBox
-                    npcId={event.npc}
-                    text={followUpText}
-                    locale={locale}
-                    onComplete={handleFollowUpComplete}
-                  />
-                </motion.div>
-              )}
+            {/* NPC 리액션 대사 — 타이핑 (탭으로 넘김) */}
+            {eventPhase === 'npcFollowUp' && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <DialogueBox
+                  npcId={event.npc}
+                  text={followUpText}
+                  locale={locale}
+                  onComplete={handleFollowUpComplete}
+                />
+              </motion.div>
+            )}
 
-              {/* 2차 입력 중 / AI 분석 중 — 리액션 대사 정적 표시 */}
-              {(eventPhase === 'playerInput2' || eventPhase === 'aiAnalyzing') && (
-                <motion.div
-                  key="staticDialogue2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <StaticDialogue npcId={event.npc} text={followUpText} locale={locale} />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* 2차 입력 중 / AI 분석 중 — 리액션 대사 정적 표시 */}
+            {(eventPhase === 'playerInput2' || eventPhase === 'aiAnalyzing') && (
+              <StaticDialogue npcId={event.npc} text={followUpText} locale={locale} />
+            )}
           </div>
 
           {/* 하단: 입력 / 로딩 영역 */}
