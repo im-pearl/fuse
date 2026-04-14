@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -11,12 +11,13 @@ interface Props {
 export default function PlayerInput({ onSubmit }: Props) {
   const [text, setText] = useState('');
   const { t } = useTranslation();
+  const firedRef = useRef(false);
 
   const handleSubmit = () => {
-    if (text.trim()) {
-      onSubmit(text.trim());
-      setText('');
-    }
+    if (!text.trim() || firedRef.current) return;
+    firedRef.current = true;
+    onSubmit(text.trim());
+    setText('');
   };
 
   return (
@@ -37,6 +38,7 @@ export default function PlayerInput({ onSubmit }: Props) {
         maxLength={200}
       />
       <button
+        type="button"
         onClick={handleSubmit}
         disabled={!text.trim()}
         className="px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white text-sm hover:bg-white/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
