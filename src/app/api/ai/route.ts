@@ -42,40 +42,36 @@ emotion types: anxiety, burden, injustice, helplessness, selfBlame, anger`;
 
 export async function POST(request: Request) {
   try {
-    const { npcDialogue, npcFollowUp, playerInput1, playerInput2, playerName, locale } =
+    const { npcDialogue, npcFollowUp, playerInput1, playerInput2, playerSurname, playerFirstName, locale } =
       await request.json();
+
+    const playerLabel = `${playerSurname}${playerFirstName}`;
 
     const userMessage = `NPC says: "${npcDialogue}"
 Player (1st response): "${playerInput1}"
 NPC follows up: "${npcFollowUp}"
 Player (2nd response): "${playerInput2}"
 
-Player name: ${playerName}
+Player name: ${playerLabel}
 Language for comment: ${locale === 'ko' ? 'Korean' : 'English'}
 
 Analyze the player's emotional state and respond in JSON.`;
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 300,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     });
 
     const content = message.content[0];
-    if (content.type !== 'text') {
-      throw new Error('Unexpected response type');
-    }
+    if (content.type !== 'text') throw new Error('Unexpected response type');
 
-    // JSON 파싱 (코드블록 안에 있을 수 있음)
     const jsonMatch = content.text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('No JSON found in response');
-    }
+    if (!jsonMatch) throw new Error('No JSON found in response');
 
     const parsed = JSON.parse(jsonMatch[0]);
 
-    // 유효성 검증
     const validPatterns: ResponsePattern[] = ['comply', 'resist', 'avoid', 'humor', 'overPositive', 'aggressive'];
     const validEmotions: EmotionType[] = ['anxiety', 'burden', 'injustice', 'helplessness', 'selfBlame', 'anger'];
 
@@ -92,17 +88,26 @@ Analyze the player's emotional state and respond in JSON.`;
       comment: typeof parsed.comment === 'string' ? parsed.comment : '',
     };
 
-    // 감정이 비어있으면 기본값
     if (result.emotions.length === 0) {
       result.emotions = [{ emotion: 'burden', amount: 20 }];
     }
 
+    // ── 개발용 터미널 로그 ──────────────────────────────
+    console.log('\n[FUSE] ── 감정 판정 결과 ──────────────────');
+    console.log(`  플레이어: ${playerLabel}`);
+    console.log(`  1차 입력: "${playerInput1}"`);
+    console.log(`  2차 입력: "${playerInput2}"`);
+    console.log(`  패턴:     ${result.pattern}`);
+    console.log(`  감정 증가:`);
+    result.emotions.forEach((e) => {
+      console.log(`    ${e.emotion.padEnd(14)} +${e.amount}`);
+    });
+    console.log(`  코멘트:   "${result.comment}"`);
+    console.log('──────────────────────────────────────────\n');
+
     return NextResponse.json(result);
   } catch (error) {
-    console.error('AI analysis error:', error);
-    return NextResponse.json(
-      { error: 'Analysis failed' },
-      { status: 500 }
-    );
+    console.error('[FUSE] AI analysis error:', error);
+    return NextResponse.json({ error: 'Analysis failed' }, { status: 500 });
   }
 }
