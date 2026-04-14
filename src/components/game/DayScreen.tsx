@@ -6,6 +6,7 @@ import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from '@/i18n/useTranslation';
 import { days } from '@/data/events';
 import { LocaleText } from '@/types/game';
+import { fillNamePlaceholders } from '@/lib/nameUtils';
 import DialogueBox from './DialogueBox';
 import PlayerInput from './PlayerInput';
 import BombDisplay from './BombDisplay';
@@ -33,7 +34,8 @@ export default function DayScreen() {
     currentEventIndex,
     eventPhase,
     locale,
-    playerName,
+    playerSurname,
+    playerFirstName,
     bombs,
     playerInput1,
     aiComment,
@@ -46,12 +48,17 @@ export default function DayScreen() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [newBombCount, setNewBombCount] = useState(0);
-  // Claude가 생성한 NPC 반응 대사 (1차 입력 기반)
   const [generatedFollowUp, setGeneratedFollowUp] = useState<LocaleText | null>(null);
 
   const dayData = days[currentDay];
   const event = dayData.events[currentEventIndex];
   const isSystem = event.npc === 'system';
+
+  // 플레이스홀더를 실제 이름으로 채운 LocaleText 생성
+  const fillText = (text: LocaleText): LocaleText => ({
+    ko: fillNamePlaceholders(text.ko, playerSurname, playerFirstName),
+    en: fillNamePlaceholders(text.en, playerSurname, playerFirstName),
+  });
 
   const handleDialogueComplete = () => {
     if (isSystem) {
@@ -74,16 +81,15 @@ export default function DayScreen() {
           npcId: event.npc,
           originalDialogue: event.dialogue[locale],
           playerInput1: text,
-          playerName,
+          playerSurname,
+          playerFirstName,
           locale,
         }),
       });
       const data = await res.json();
-      // 양쪽 locale 모두 같은 생성 텍스트로 — 이미 locale에 맞게 생성됨
       setGeneratedFollowUp({ ko: data.dialogue, en: data.dialogue });
     } catch {
-      // 폴백: 기획서 원본 대사 사용
-      setGeneratedFollowUp(event.followUpDialogue);
+      setGeneratedFollowUp(fillText(event.followUpDialogue));
     } finally {
       setIsLoading(false);
       setEventPhase('npcFollowUp');
@@ -105,7 +111,8 @@ export default function DayScreen() {
         npcFollowUp: generatedFollowUp?.[locale] ?? event.followUpDialogue[locale],
         playerInput1,
         playerInput2: text,
-        playerName,
+        playerSurname,
+        playerFirstName,
         locale,
       });
       setNewBombCount(result.emotions.length);
@@ -129,7 +136,7 @@ export default function DayScreen() {
     advanceEvent();
   };
 
-  const followUpText = generatedFollowUp ?? event.followUpDialogue;
+  const followUpText = generatedFollowUp ?? fillText(event.followUpDialogue);
 
   return (
     <div className="flex flex-col h-full">
@@ -140,7 +147,7 @@ export default function DayScreen() {
         </span>
       </div>
 
-      {/* 폭탄 표시 */}
+      {/* 폭탄 슬롯 표시 */}
       <div className="px-4 py-2">
         <BombDisplay bombs={bombs} locale={locale} newBombCount={newBombCount} />
       </div>
@@ -152,9 +159,9 @@ export default function DayScreen() {
             <motion.div key="dialogue" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <DialogueBox
                 npcId={event.npc}
-                text={event.dialogue}
+                text={fillText(event.dialogue)}
                 locale={locale}
-                innerThought={event.innerThought}
+                innerThought={event.innerThought ? fillText(event.innerThought) : undefined}
                 onComplete={handleDialogueComplete}
               />
             </motion.div>
@@ -166,14 +173,12 @@ export default function DayScreen() {
             </motion.div>
           )}
 
-          {/* NPC 반응 생성 중 로딩 */}
           {eventPhase === 'loadingNpcReaction' && (
             <motion.div key="loadingNpc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <LoadingDots />
             </motion.div>
           )}
 
-          {/* Claude가 생성한 NPC 반응 대사 */}
           {eventPhase === 'npcFollowUp' && (
             <motion.div key="followup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <DialogueBox

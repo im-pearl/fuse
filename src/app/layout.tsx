@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="ko" className="h-full">
       <body className="h-full bg-black flex items-center justify-center">
         {/* 모바일 비율 컨테이너 — 항상 세로 */}
-        <div className="w-full max-w-[430px] h-full max-h-dvh bg-zinc-950 relative overflow-hidden">
+        <div className="w-full max-w-[430px] h-full max-h-dvh bg-[#14121a] relative overflow-hidden">
           {children}
         </div>
       </body>

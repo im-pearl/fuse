@@ -5,7 +5,8 @@ interface AnalyzeRequest {
   npcFollowUp: string;
   playerInput1: string;
   playerInput2: string;
-  playerName: string;
+  playerSurname: string;
+  playerFirstName: string;
   locale: Locale;
 }
 

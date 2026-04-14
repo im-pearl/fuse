@@ -20,8 +20,8 @@ export const days: DayData[] = [
         id: 'd1e2',
         npc: 'leeManager',
         dialogue: {
-          ko: '이거 ㅇ대리 담당이잖아. 기한을 놓치면 어떻게 해?',
-          en: "This is your responsibility. How could you miss the deadline?",
+          ko: '이거 {surname}대리 담당이잖아. 기한을 놓치면 어떻게 해?',
+          en: "This is your responsibility, {surname}. How could you miss the deadline?",
         },
         innerThought: {
           ko: '그거 과장님이 하기로 했었잖아요...',
@@ -89,16 +89,16 @@ export const days: DayData[] = [
           en: 'That was my idea...',
         },
         followUpDialogue: {
-          ko: 'ㅇ대리도 좀 본받아. 적극적으로 해봐.',
-          en: 'You should learn from her. Be more proactive.',
+          ko: '{surname}대리도 좀 본받아. 적극적으로 해봐.',
+          en: 'You should learn from her, {surname}. Be more proactive.',
         },
       },
       {
         id: 'd2e4',
         npc: 'kimAssociate',
         dialogue: {
-          ko: 'ㅇㅇ야. 이거 좀 해줄 수 있어? 나 오늘 진짜 급한 일 있어서 그래. 제발~',
-          en: "Hey, can you do this for me? I really have something urgent today. Please~",
+          ko: '{firstname}{particle}. 이거 좀 해줄 수 있어? 나 오늘 진짜 급한 일 있어서 그래. 제발~',
+          en: "Hey {firstname}, can you do this for me? I really have something urgent today. Please~",
         },
         followUpDialogue: {
           ko: '고마워~ 역시 넌 착해. 나중에 밥 살게! (안 삼)',
@@ -109,8 +109,8 @@ export const days: DayData[] = [
         id: 'd2e4b',
         npc: 'parkDirector',
         dialogue: {
-          ko: 'ㅇ대리는 결혼 안 해?',
-          en: "Aren't you getting married?",
+          ko: '{surname}대리는 결혼 안 해?',
+          en: "Aren't you getting married, {surname}?",
         },
         followUpDialogue: {
           ko: '요즘 젊은 애들은 왜 결혼을 안 하려고 하는지 모르겠어. 나 때는 다 했는데.',
@@ -138,8 +138,8 @@ export const days: DayData[] = [
         id: 'd3e1',
         npc: 'parkDirector',
         dialogue: {
-          ko: 'ㅇ대리 좀 웃고 다녀. 회사 분위기가 우중충해.',
-          en: "Smile more. You're bringing down the office mood.",
+          ko: '{surname}대리 좀 웃고 다녀. 회사 분위기가 우중충해.',
+          en: "Smile more, {surname}. You're bringing down the office mood.",
         },
         followUpDialogue: {
           ko: '요즘 젊은 애들은 멘탈이 왜 이렇게 약해. 나 때는 이 정도는 아무것도 아니었는데.',
@@ -150,8 +150,8 @@ export const days: DayData[] = [
         id: 'd3e2',
         npc: 'leeManager',
         dialogue: {
-          ko: 'ㅇ대리. 요즘 왜 그래? 나는 ㅇ대리가 안 그런 사람인 거 알지만 자꾸 그러면 뒤에서 말 나와.',
-          en: "What's been going on with you? I know you're not usually like this, but people are starting to talk.",
+          ko: '{surname}대리. 요즘 왜 그래? 나는 {surname}대리가 안 그런 사람인 거 알지만 자꾸 그러면 뒤에서 말 나와.',
+          en: "What's been going on with you, {surname}? I know you're not usually like this, but people are starting to talk.",
         },
         followUpDialogue: {
           ko: '내가 걱정돼서 하는 말이야. 조심해.',
