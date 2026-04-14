@@ -1,0 +1,51 @@
+{
+  "title": "FUSE",
+  "subtitle": "터지기 전에, 녹이세요.",
+  "languageSelect": {
+    "title": "언어를 선택하세요",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "nameInput": {
+    "title": "이름을 입력하세요",
+    "placeholder": "이름",
+    "confirm": "시작"
+  },
+  "prologue": {
+    "line1": "1592년, 경주.",
+    "line2": "왜군 병사가 굴러온 쇠공을 발견한다.",
+    "line3": "별거 아닌 줄 알고 구경한다.",
+    "start": "게임 시작"
+  },
+  "game": {
+    "day": "Day {day}",
+    "inputPlaceholder": "당신의 대답을 입력하세요...",
+    "send": "보내기",
+    "innerThought": "(속마음)",
+    "newBomb": "새로운 감정이 쌓였습니다.",
+    "continue": "계속"
+  },
+  "gameOver": {
+    "explosion": "폭발",
+    "message": "당신의 감정이 터졌습니다."
+  },
+  "ending": {
+    "line1": "1592년, 왜군은 이것을 보고 생각했다.",
+    "line2": "\"별거 아니네.\"",
+    "line3": "당신의 {emotion}도 그랬습니다.",
+    "line4": "아무도 몰랐습니다.",
+    "gameOver": "GAME OVER",
+    "lifeNotOver": "LIFE IS NOT OVER",
+    "finalMessage": "터지기 전에, 녹으세요.",
+    "restart": "다시 시작",
+    "emotions": {
+      "anxiety": "불안",
+      "burden": "부담감",
+      "injustice": "억울함",
+      "helplessness": "무력감",
+      "selfBlame": "자괴감",
+      "anger": "분노",
+      "default": "감정"
+    }
+  }
+}
