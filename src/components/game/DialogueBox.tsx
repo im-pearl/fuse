@@ -38,7 +38,7 @@ export default function DialogueBox({ npcId, text, locale, onComplete, innerThou
         {npc.name[locale]}
       </span>
 
-      <div className="bg-white/5 border border-white/10 rounded-lg p-4 min-h-[80px] relative">
+      <div className="bg-[#14121a]/80 backdrop-blur-sm border border-white/10 rounded-lg p-4 min-h-[80px] relative">
         <p className="text-white/90 text-sm leading-relaxed pr-4">
           {displayed}
           {!isDone && <span className="animate-pulse">|</span>}
