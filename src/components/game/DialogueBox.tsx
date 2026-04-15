@@ -32,21 +32,20 @@ export default function DialogueBox({ npcId, text, locale, onComplete, innerThou
     <div className="flex flex-col gap-3 w-full" onClick={handleClick}>
       <div className="bg-[#14121a]/80 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden relative">
         {/* 이름 헤더 */}
-        <div className="px-4 py-2.5 border-b border-white/[0.07]">
+        <div className="px-4 pt-3 pb-1">
           <span className="text-xs font-bold tracking-wide" style={{ color: npc.color }}>
             {npc.name[locale]}
           </span>
         </div>
-        {/* 대사 본문 */}
-        <div className="px-4 py-3 min-h-[60px] relative">
+        <div className="px-4 pt-1 pb-3 min-h-[52px] relative">
           <p className="text-white/90 text-sm leading-relaxed pr-4">
             {displayed}
             {!isDone && <span className="animate-pulse">|</span>}
           </p>
           {isDone && (
             <motion.span
-              className="absolute bottom-2.5 right-3 text-white/30 text-[10px] leading-none"
-              animate={{ opacity: [0.2, 0.8, 0.2] }}
+              className="absolute bottom-2.5 right-3 text-white/50 text-[10px] leading-none"
+              animate={{ opacity: [0.3, 1, 0.3] }}
               transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
             >
               ▶
