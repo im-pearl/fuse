@@ -64,7 +64,7 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
               >
                 {isActive && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src="/assets/bomb.png" alt="" width={32} height={32} style={{ imageRendering: 'pixelated' }} />
+                  <img src="/assets/bomb.png" alt="" className="w-4/5 h-4/5 object-contain" style={{ imageRendering: 'pixelated' }} />
                 )}
                 {isNew && (
                   <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white leading-none">

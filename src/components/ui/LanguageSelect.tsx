@@ -31,11 +31,7 @@ export default function LanguageSelect() {
       transition={{ duration: 1 }}
     >
       {/* 타이틀 */}
-      <div className="flex items-center gap-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/assets/bomb.png" alt="" width={36} height={36} style={{ imageRendering: 'pixelated' }} />
-        <h1 className="text-4xl font-bold tracking-[0.2em] text-white">FUSE</h1>
-      </div>
+      <h1 className="text-4xl font-bold tracking-[0.2em] text-white">FUSE</h1>
 
       {/* 언어 선택 */}
       <div className="flex gap-2 w-full max-w-[280px]">
