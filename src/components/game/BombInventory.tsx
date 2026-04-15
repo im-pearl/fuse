@@ -43,8 +43,8 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
         </button>
       </div>
 
-      {/* 슬롯 그리드 */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 gap-6">
+      {/* 슬롯 그리드 + 카드 */}
+      <div className="flex-1 flex flex-col justify-center px-8 gap-4">
         <div className="grid grid-cols-3 gap-4 w-full">
           {EMOTION_ORDER.map((emotion) => {
             const isActive = activatedSet.has(emotion);
@@ -52,17 +52,21 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
             return (
               <button
                 key={emotion}
-                onClick={() => isActive ? setSelected(emotion) : undefined}
+                onClick={() => isActive ? setSelected(selected === emotion ? null : emotion) : undefined}
                 className={`
-                  relative aspect-square rounded-lg border flex items-center justify-center text-3xl
+                  relative aspect-square rounded-lg border flex items-center justify-center
                   transition-all duration-150
                   ${isActive
                     ? 'border-white/25 bg-white/5 hover:bg-white/10 active:scale-95 cursor-pointer'
                     : 'border-white/8 bg-white/[0.02] cursor-default'
                   }
+                  ${selected === emotion ? 'border-white/50' : ''}
                 `}
               >
-                {isActive && '💣'}
+                {isActive && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src="/assets/bomb.png" alt="" className="w-4/5 h-4/5 object-contain" style={{ imageRendering: 'pixelated' }} />
+                )}
                 {isNew && (
                   <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white leading-none">
                     N
@@ -73,53 +77,34 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
           })}
         </div>
 
-        <p className="text-white/20 text-xs tracking-wide">
+        <p className="text-white/20 text-xs tracking-wide text-center">
           {bombs.length === 0 ? t('bombs.empty') : t('bombs.hint')}
         </p>
-      </div>
 
-      {/* 폭탄 상세 카드 */}
-      <AnimatePresence>
+        {/* 상세 카드 */}
+        <AnimatePresence>
         {selected && (
-          <>
-            <motion.div
-              className="absolute inset-0 z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelected(null)}
-            />
-            <motion.div
-              className="absolute z-20 inset-x-6 top-1/2 -translate-y-1/2 bg-[#1a1824] border border-white/20 rounded-xl p-6 flex flex-col gap-4"
-              initial={{ opacity: 0, scale: 0.94, y: '-48%' }}
-              animate={{ opacity: 1, scale: 1, y: '-50%' }}
-              exit={{ opacity: 0, scale: 0.94, y: '-48%' }}
-              transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-            >
-              {/* X 버튼 */}
-              <button
-                onClick={() => setSelected(null)}
-                className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-white/40 hover:text-white transition-colors text-lg leading-none"
-              >
-                ×
-              </button>
-
-              {/* 카드 헤더 */}
-              <div className="flex items-center gap-3 pr-6">
-                <span className="text-4xl">💣</span>
-                <span className="text-white text-base font-medium leading-snug">
-                  {t(`bombs.${selected}.name`)}
-                </span>
-              </div>
-
-              {/* 설명 */}
-              <p className="text-white/65 text-sm leading-relaxed">
-                {t(`bombs.${selected}.description`)}
-              </p>
-            </motion.div>
-          </>
+          <motion.div
+            className="bg-[#1a1824] border border-white/20 rounded-xl p-5 flex flex-col gap-3"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/assets/bomb.png" alt="" width={36} height={36} style={{ imageRendering: 'pixelated' }} />
+              <span className="text-white text-base font-medium leading-snug">
+                {t(`bombs.${selected}.name`)}
+              </span>
+            </div>
+            <p className="text-white/65 text-sm leading-relaxed">
+              {t(`bombs.${selected}.description`)}
+            </p>
+          </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
