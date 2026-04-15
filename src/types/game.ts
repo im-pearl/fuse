@@ -22,7 +22,7 @@ export type ResponsePattern =
   | 'overPositive'
   | 'aggressive';
 
-export type NpcId = 'parkDirector' | 'leeManager' | 'kimAssociate' | 'system';
+export type NpcId = 'parkDirector' | 'leeManager' | 'kimAssociate';
 
 export type Locale = 'ko' | 'en';
 

@@ -5,7 +5,9 @@ export interface NpcProfile {
   name: LocaleText;
   role: LocaleText;
   age: number;
-  color: string; // 대사 표시 시 이름 색상
+  color: string;
+  imageName: string;           // public/assets/{imageName}.png
+  position: 'left' | 'right'; // 화면 어느 쪽에 표시할지
 }
 
 export const npcs: Record<NpcId, NpcProfile> = {
@@ -15,6 +17,8 @@ export const npcs: Record<NpcId, NpcProfile> = {
     role: { ko: '임원, 58세', en: 'Executive, 58' },
     age: 58,
     color: '#c0392b',
+    imageName: 'npc-park',
+    position: 'right',
   },
   leeManager: {
     id: 'leeManager',
@@ -22,6 +26,8 @@ export const npcs: Record<NpcId, NpcProfile> = {
     role: { ko: '중간관리자, 45세', en: 'Middle Manager, 45' },
     age: 45,
     color: '#2980b9',
+    imageName: 'npc-lee',
+    position: 'left',
   },
   kimAssociate: {
     id: 'kimAssociate',
@@ -29,12 +35,7 @@ export const npcs: Record<NpcId, NpcProfile> = {
     role: { ko: '동료, 32세', en: 'Colleague, 32' },
     age: 32,
     color: '#27ae60',
-  },
-  system: {
-    id: 'system',
-    name: { ko: '시스템', en: 'System' },
-    role: { ko: '', en: '' },
-    age: 0,
-    color: '#7f8c8d',
+    imageName: 'npc-kim',
+    position: 'left',
   },
 };
