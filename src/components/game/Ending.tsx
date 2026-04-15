@@ -12,10 +12,9 @@ interface ScreenContentProps {
   lineDelay?: number;
   getLineClass: (i: number) => string;
   onComplete: () => void;
-  slideUp?: boolean;
 }
 
-function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete, slideUp = true }: ScreenContentProps) {
+function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete }: ScreenContentProps) {
   const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
@@ -28,37 +27,34 @@ function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete, slid
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lineIndex]);
 
-  if (slideUp) {
-    return (
-      <>
-        {lines.slice(0, lineIndex).map((line, i) => (
-          <motion.p
-            key={i}
-            className={`text-center leading-relaxed ${getLineClass(i)}`}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {line}
-          </motion.p>
-        ))}
-      </>
-    );
-  }
-
-  // slideUp=false: 모든 줄 미리 렌더링 → 레이아웃 고정, opacity만 순서대로 켜짐
   return (
     <>
-      {lines.map((line, i) => (
+      {lines.slice(0, lineIndex).map((line, i) => (
         <motion.p
           key={i}
           className={`text-center leading-relaxed ${getLineClass(i)}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: i < lineIndex ? 1 : 0 }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           {line}
         </motion.p>
+      ))}
+    </>
+  );
+}
+
+function Screen2({ lines, getLineClass, onComplete }: { lines: string[]; getLineClass: (i: number) => string; onComplete: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onComplete, 2000);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <>
+      {lines.map((line, i) => (
+        <p key={i} className={`text-center leading-relaxed ${getLineClass(i)}`}>{line}</p>
       ))}
     </>
   );
@@ -138,14 +134,7 @@ export default function Ending() {
               onComplete={handleScreenComplete}
             />
           )}
-          {screen === 2 && (
-            <ScreenContent
-              lines={screenLines[2]}
-              getLineClass={screen2Class}
-              onComplete={handleScreenComplete}
-              slideUp={false}
-            />
-          )}
+          {screen === 2 && <Screen2 lines={screenLines[2]} getLineClass={screen2Class} onComplete={handleScreenComplete} />}
         </motion.div>
       </AnimatePresence>
 
