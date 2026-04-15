@@ -62,7 +62,10 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
                   }
                 `}
               >
-                {isActive && '💣'}
+                {isActive && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src="/assets/bomb.png" alt="" width={32} height={32} style={{ imageRendering: 'pixelated' }} />
+                )}
                 {isNew && (
                   <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white leading-none">
                     N
@@ -106,7 +109,8 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
 
               {/* 카드 헤더 */}
               <div className="flex items-center gap-3 pr-6">
-                <span className="text-4xl">💣</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/assets/bomb.png" alt="" width={40} height={40} style={{ imageRendering: 'pixelated' }} />
                 <span className="text-white text-base font-medium leading-snug">
                   {t(`bombs.${selected}.name`)}
                 </span>
