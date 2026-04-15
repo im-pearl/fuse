@@ -41,7 +41,7 @@ export default function NameInput() {
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && firstNameRef.current?.focus()}
-            placeholder={locale === 'ko' ? '김' : 'Kim'}
+            placeholder=""
             className="bg-transparent border-b border-white/40 text-white text-center text-xl py-2 outline-none focus:border-white/80 transition-colors w-full"
             autoFocus
             maxLength={10}
@@ -59,7 +59,7 @@ export default function NameInput() {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            placeholder={locale === 'ko' ? '영순' : 'Youngsoon'}
+            placeholder=""
             className="bg-transparent border-b border-white/40 text-white text-center text-xl py-2 outline-none focus:border-white/80 transition-colors w-full"
             maxLength={20}
           />

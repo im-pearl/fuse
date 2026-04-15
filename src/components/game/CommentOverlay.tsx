@@ -24,14 +24,14 @@ export default function CommentOverlay({ comment, onDone }: Props) {
       >
         {comment}
       </motion.p>
-      <motion.p
+      <motion.span
         className="text-white/20 text-xs"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        animate={{ opacity: [0.2, 0.8, 0.2] }}
+        transition={{ delay: 2, duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
       >
-        tap
-      </motion.p>
+        ▶
+      </motion.span>
     </motion.div>
   );
 }

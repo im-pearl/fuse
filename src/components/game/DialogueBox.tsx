@@ -64,11 +64,20 @@ export default function DialogueBox({ npcId, text, locale, onComplete, innerThou
       </span>
 
       {/* 대사 */}
-      <div className="bg-white/5 border border-white/10 rounded-lg p-4 min-h-[80px]">
-        <p className="text-white/90 text-sm leading-relaxed">
+      <div className="bg-white/5 border border-white/10 rounded-lg p-4 min-h-[80px] relative">
+        <p className="text-white/90 text-sm leading-relaxed pr-4">
           {displayed}
           {!isDone && <span className="animate-pulse">|</span>}
         </p>
+        {isDone && (
+          <motion.span
+            className="absolute bottom-2.5 right-3 text-white/30 text-[10px] leading-none"
+            animate={{ opacity: [0.2, 0.8, 0.2] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            ▶
+          </motion.span>
+        )}
       </div>
 
       {/* 속마음 */}
@@ -81,12 +90,6 @@ export default function DialogueBox({ npcId, text, locale, onComplete, innerThou
         >
           {innerThought[locale]}
         </motion.p>
-      )}
-
-      {isDone && (
-        <p className="text-white/20 text-xs text-center">
-          {locale === 'ko' ? '탭하여 계속' : 'Tap to continue'}
-        </p>
       )}
     </div>
   );
