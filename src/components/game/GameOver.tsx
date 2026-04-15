@@ -31,10 +31,10 @@ export default function GameOver() {
     return () => clearTimeout(t);
   }, [stage, frameIndex]);
 
-  // done → ending
+  // done → story
   useEffect(() => {
     if (stage !== 'done') return;
-    const t = setTimeout(() => setPhase('ending'), 1200);
+    const t = setTimeout(() => setPhase('story'), 1200);
     return () => clearTimeout(t);
   }, [stage, setPhase]);
 

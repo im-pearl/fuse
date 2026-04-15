@@ -53,26 +53,12 @@ export default function Ending() {
 
   const screens = [
     {
-      lines: [
-        t('ending.screen1.line1'),
-        t('ending.screen1.line2'),
-        t('ending.screen1.line3'),
-        t('ending.screen1.line4'),
-        t('ending.screen1.line5'),
-      ],
-      getLineClass: (i: number) => {
-        if (i === 1 || i === 3) return 'text-white/40 text-sm italic';
-        if (i === 4) return 'text-white/70 text-base';
-        return 'text-white/70 text-sm';
-      },
-    },
-    {
-      lines: [t('ending.screen2.line1'), t('ending.screen2.line2'), t('ending.screen2.line3')],
+      lines: [t('ending.screen1.line1'), t('ending.screen1.line2'), t('ending.screen1.line3')],
       lineDelay: 1000,
       getLineClass: () => 'text-white/90 text-sm font-light tracking-wide',
     },
     {
-      lines: [t('ending.screen3.line1'), t('ending.screen3.line2'), t('ending.screen3.line3')],
+      lines: [t('ending.screen2.line1'), t('ending.screen2.line2'), t('ending.screen2.line3')],
       getLineClass: (i: number) => {
         if (i === 0) return 'text-red-400 text-3xl font-bold tracking-widest';
         if (i === 1) return 'text-white/50 text-xs tracking-widest';
