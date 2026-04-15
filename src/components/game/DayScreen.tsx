@@ -40,7 +40,7 @@ function StaticDialogue({ npcId, text, locale }: { npcId: NpcId; text: LocaleTex
       <span className="text-sm font-bold" style={{ color: npc.color }}>
         {npc.name[locale]}
       </span>
-      <div className="bg-white/5 border border-white/10 rounded-lg p-4 min-h-[80px]">
+      <div className="bg-[#14121a]/80 backdrop-blur-sm border border-white/10 rounded-lg p-4 min-h-[80px]">
         <p className="text-white/70 text-sm leading-relaxed pr-4">{text[locale]}</p>
       </div>
     </div>
@@ -59,7 +59,7 @@ function DayIntro({
   return (
     <div className="flex flex-col gap-3 w-full" onClick={handleClick}>
       <span className="text-xs text-white/25 tracking-widest">{playerName}</span>
-      <div className="bg-black/40 border border-white/10 rounded-lg p-4 min-h-[80px] relative backdrop-blur-sm">
+      <div className="bg-black/60 border border-white/10 rounded-lg p-4 min-h-[80px] relative">
         <p className="text-white/55 text-sm italic leading-relaxed pr-4">
           {displayed}
           {!isDone && <span className="animate-pulse">|</span>}
@@ -257,7 +257,7 @@ export default function DayScreen() {
       ) : (
         <>
           {/* 대사 영역 */}
-          <div className="flex-1 flex flex-col justify-end px-4 pb-3 overflow-y-auto relative z-[2] bg-gradient-to-t from-[#14121a]/95 via-[#14121a]/60 to-transparent">
+          <div className="flex-1 flex flex-col justify-end px-4 pb-3 overflow-y-auto relative z-[2]">
             {eventPhase === 'npcDialogue' && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <DialogueBox
