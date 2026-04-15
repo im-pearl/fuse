@@ -59,7 +59,7 @@ function DayIntro({
   return (
     <div className="flex flex-col gap-3 w-full" onClick={handleClick}>
       <span className="text-xs text-white/25 tracking-widest">{playerName}</span>
-      <div className="bg-black/40 border border-white/10 rounded-lg p-4 min-h-[80px] relative backdrop-blur-sm">
+      <div className="bg-black/60 border border-white/10 rounded-lg p-4 min-h-[80px] relative">
         <p className="text-white/55 text-sm italic leading-relaxed pr-4">
           {displayed}
           {!isDone && <span className="animate-pulse">|</span>}
@@ -195,7 +195,7 @@ export default function DayScreen() {
             key={event.npc}
             src={`/assets/${npc.imageName}.png`}
             alt=""
-            className="absolute z-[1] pointer-events-none"
+            className="absolute z-[3] pointer-events-none"
             style={{
               bottom: '20%',
               width: 220,
