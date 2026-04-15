@@ -10,13 +10,13 @@ import { fillNamePlaceholders } from '@/lib/nameUtils';
 import { npcs } from '@/data/npcs';
 import DialogueBox from './DialogueBox';
 import PlayerInput from './PlayerInput';
-import BombDisplay from './BombDisplay';
+import BombInventory from './BombInventory';
 import CommentOverlay from './CommentOverlay';
 import { analyzeEmotion } from '@/lib/ai';
 
 function LoadingDots() {
   return (
-    <div className="flex gap-1 justify-center py-6">
+    <div className="flex gap-1 justify-center py-4">
       {[0, 1, 2].map((i) => (
         <motion.div
           key={i}
@@ -37,8 +37,8 @@ function StaticDialogue({ npcId, text, locale }: { npcId: NpcId; text: LocaleTex
       <span className="text-sm font-bold" style={{ color: npc.color }}>
         {npc.name[locale]}
       </span>
-      <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-        <p className="text-white/70 text-sm leading-relaxed">{text[locale]}</p>
+      <div className="bg-white/5 border border-white/10 rounded-lg p-4 min-h-[80px]">
+        <p className="text-white/70 text-sm leading-relaxed pr-4">{text[locale]}</p>
       </div>
     </div>
   );
@@ -64,6 +64,7 @@ export default function DayScreen() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [newBombEmotions, setNewBombEmotions] = useState<EmotionType[]>([]);
+  const [showInventory, setShowInventory] = useState(false);
   const [generatedFollowUp, setGeneratedFollowUp] = useState<LocaleText | null>(null);
 
   const dayData = days[currentDay];
@@ -163,18 +164,39 @@ export default function DayScreen() {
   const isShowingResult = eventPhase === 'showResult';
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       {/* Day 헤더 */}
-      <div className="py-3 px-4 border-b border-white/10 shrink-0">
+      <div className="flex items-center justify-between py-3 px-4 border-b border-white/10 shrink-0">
         <span className="text-white/40 text-xs tracking-widest">
           {t('game.day', { day: String(currentDay + 1) })}
         </span>
+
+        {/* 인벤토리 트리거 버튼 (박스 애셋 자리) */}
+        <button
+          onClick={() => setShowInventory(true)}
+          className="relative w-8 h-8 flex items-center justify-center text-white/30 hover:text-white/60 transition-colors"
+          aria-label="감정 보관함"
+        >
+          {/* 박스 플레이스홀더 SVG */}
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="7" width="16" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M2 10h16" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M7 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M8 10v2h4v-2" stroke="currentColor" strokeWidth="1.2"/>
+          </svg>
+          {/* 새 폭탄 알림 점 */}
+          {newBombEmotions.length > 0 && (
+            <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-400 rounded-full" />
+          )}
+        </button>
       </div>
 
-      {/* 폭탄 슬롯 */}
-      <div className="px-4 py-2 shrink-0">
-        <BombDisplay bombs={bombs} locale={locale} newBombEmotions={newBombEmotions} />
-      </div>
+      {/* 인벤토리 오버레이 */}
+      <AnimatePresence>
+        {showInventory && (
+          <BombInventory bombs={bombs} onClose={() => setShowInventory(false)} />
+        )}
+      </AnimatePresence>
 
       {isShowingResult ? (
         /* 결과 코멘트 — 전체 영역 */
@@ -236,13 +258,14 @@ export default function DayScreen() {
             )}
           </div>
 
-          {/* 하단: 입력 / 로딩 영역 */}
-          <div className="px-4 pb-4 pt-3 shrink-0 border-t border-white/5">
+          {/* 하단: 입력 / 로딩 영역 — 고정 높이 + absolute 자식으로 완전 안정화 */}
+          <div className="relative h-[72px] shrink-0 border-t border-white/5">
             <AnimatePresence mode="wait">
               {eventPhase === 'playerInput1' && (
                 <motion.div
                   key="input1"
-                  initial={{ opacity: 0, y: 6 }}
+                  className="absolute inset-0 flex items-center px-4"
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
@@ -254,6 +277,7 @@ export default function DayScreen() {
               {eventPhase === 'loadingNpcReaction' && (
                 <motion.div
                   key="loadingNpc"
+                  className="absolute inset-0 flex items-center justify-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -265,7 +289,8 @@ export default function DayScreen() {
               {eventPhase === 'playerInput2' && (
                 <motion.div
                   key="input2"
-                  initial={{ opacity: 0, y: 6 }}
+                  className="absolute inset-0 flex items-center px-4"
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
@@ -277,6 +302,7 @@ export default function DayScreen() {
               {eventPhase === 'aiAnalyzing' && isLoading && (
                 <motion.div
                   key="loadingAI"
+                  className="absolute inset-0 flex items-center justify-center"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
