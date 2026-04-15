@@ -53,20 +53,19 @@
     "explosion": "EXPLOSION",
     "message": "Your emotions have exploded."
   },
+  "story": {
+    "sub1a": "In 1592, soldiers saw the Bigyeokjincheonroe and thought:",
+    "sub1b": "Doesn't look like much.",
+    "sub2a": "In 2026, the people around you looked at you and thought:",
+    "sub2b": "Doesn't seem like a big deal."
+  },
   "ending": {
     "screen1": {
-      "line1": "In 1592, soldiers saw the Bigyeokjincheonroe and thought:",
-      "line2": "Doesn't look like much.",
-      "line3": "In 2026, the people around you looked at you and thought:",
-      "line4": "Doesn't seem like a big deal.",
-      "line5": "But.."
-    },
-    "screen2": {
       "line1": "Explosions always come",
       "line2": "later,",
       "line3": "suddenly"
     },
-    "screen3": {
+    "screen2": {
       "line1": "GAME OVER",
       "line2": "YOUR FEELINGS ARE NOT CLEARED",
       "line3": "Before it explodes, let it melt."

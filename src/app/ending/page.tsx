@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import GameOver from '@/components/game/GameOver';
+import Story from '@/components/game/Story';
 import Ending from '@/components/game/Ending';
 
 export default function EndingPreview() {
@@ -14,6 +15,7 @@ export default function EndingPreview() {
   return (
     <div className="h-full">
       {phase === 'gameOver' && <GameOver />}
+      {phase === 'story' && <Story />}
       {phase === 'ending' && <Ending />}
     </div>
   );

@@ -10,6 +10,7 @@ export type GamePhase =
   | 'language'
   | 'day'
   | 'gameOver'
+  | 'story'
   | 'ending';
 
 export type ResponsePattern =
