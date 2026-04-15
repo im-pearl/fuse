@@ -5,16 +5,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const HOLD_AFTER_MS = 800;
-
-interface ScreenContentProps {
+function ScreenContent({
+  lines,
+  lineDelay = 1200,
+  getLineClass,
+  onComplete,
+}: {
   lines: string[];
   lineDelay?: number;
   getLineClass: (i: number) => string;
   onComplete: () => void;
-}
-
-function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete }: ScreenContentProps) {
+}) {
   const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
@@ -44,69 +45,51 @@ function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete }: Sc
   );
 }
 
-function Screen2({ lines, getLineClass, onComplete }: { lines: string[]; getLineClass: (i: number) => string; onComplete: () => void }) {
-  useEffect(() => {
-    const t = setTimeout(onComplete, 2000);
-    return () => clearTimeout(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <>
-      {lines.map((line, i) => (
-        <p key={i} className={`text-center leading-relaxed ${getLineClass(i)}`}>{line}</p>
-      ))}
-    </>
-  );
-}
-
 export default function Ending() {
   const [screen, setScreen] = useState(0);
   const [showRestart, setShowRestart] = useState(false);
   const reset = useGameStore((s) => s.reset);
   const { t } = useTranslation();
 
-  const screenLines = [
-    [
-      t('ending.screen1.line1'),
-      t('ending.screen1.line2'),
-      t('ending.screen1.line3'),
-      t('ending.screen1.line4'),
-      t('ending.screen1.line5'),
-    ],
-    [
-      t('ending.screen2.line1'),
-      t('ending.screen2.line2'),
-      t('ending.screen2.line3'),
-    ],
-    [
-      t('ending.screen3.line1'),
-      t('ending.screen3.line2'),
-      t('ending.screen3.line3'),
-    ],
+  const screens = [
+    {
+      lines: [
+        t('ending.screen1.line1'),
+        t('ending.screen1.line2'),
+        t('ending.screen1.line3'),
+        t('ending.screen1.line4'),
+        t('ending.screen1.line5'),
+      ],
+      getLineClass: (i: number) => {
+        if (i === 1 || i === 3) return 'text-white/40 text-sm italic';
+        if (i === 4) return 'text-white/70 text-base';
+        return 'text-white/70 text-sm';
+      },
+    },
+    {
+      lines: [t('ending.screen2.line1'), t('ending.screen2.line2'), t('ending.screen2.line3')],
+      lineDelay: 1000,
+      getLineClass: () => 'text-white/90 text-sm font-light tracking-wide',
+    },
+    {
+      lines: [t('ending.screen3.line1'), t('ending.screen3.line2'), t('ending.screen3.line3')],
+      getLineClass: (i: number) => {
+        if (i === 0) return 'text-red-400 text-3xl font-bold tracking-widest';
+        if (i === 1) return 'text-white/50 text-xs tracking-widest';
+        return 'text-white text-base mt-4';
+      },
+    },
   ];
 
-  const screen0Class = (i: number) => {
-    if (i === 1 || i === 3) return 'text-white/40 text-sm italic';
-    if (i === 4) return 'text-white/70 text-base';
-    return 'text-white/70 text-sm';
-  };
-
-  const screen1Class = () => 'text-white/90 text-sm font-light tracking-wide';
-
-  const screen2Class = (i: number) => {
-    if (i === 0) return 'text-red-400 text-3xl font-bold tracking-widest';
-    if (i === 1) return 'text-white/50 text-xs tracking-widest';
-    return 'text-white text-base mt-4';
-  };
-
   const handleScreenComplete = () => {
-    if (screen < 2) {
-      setTimeout(() => setScreen((s) => s + 1), HOLD_AFTER_MS);
+    if (screen < screens.length - 1) {
+      setTimeout(() => setScreen((s) => s + 1), 800);
     } else {
       setTimeout(() => setShowRestart(true), 1500);
     }
   };
+
+  const current = screens[screen];
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-8">
@@ -119,22 +102,12 @@ export default function Ending() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {screen === 0 && (
-            <ScreenContent
-              lines={screenLines[0]}
-              getLineClass={screen0Class}
-              onComplete={handleScreenComplete}
-            />
-          )}
-          {screen === 1 && (
-            <ScreenContent
-              lines={screenLines[1]}
-              lineDelay={1000}
-              getLineClass={screen1Class}
-              onComplete={handleScreenComplete}
-            />
-          )}
-          {screen === 2 && <Screen2 lines={screenLines[2]} getLineClass={screen2Class} onComplete={handleScreenComplete} />}
+          <ScreenContent
+            lines={current.lines}
+            lineDelay={current.lineDelay}
+            getLineClass={current.getLineClass}
+            onComplete={handleScreenComplete}
+          />
         </motion.div>
       </AnimatePresence>
 
