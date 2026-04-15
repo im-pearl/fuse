@@ -12,9 +12,10 @@ interface ScreenContentProps {
   lineDelay?: number;
   getLineClass: (i: number) => string;
   onComplete: () => void;
+  slideUp?: boolean;
 }
 
-function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete }: ScreenContentProps) {
+function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete, slideUp = true }: ScreenContentProps) {
   const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete }: Sc
         <motion.p
           key={i}
           className={`text-center leading-relaxed ${getLineClass(i)}`}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: slideUp ? 8 : 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
@@ -75,7 +76,7 @@ export default function Ending() {
     return 'text-white/70 text-sm';
   };
 
-  const screen1Class = () => 'text-white/90 text-2xl font-light tracking-wide';
+  const screen1Class = () => 'text-white/90 text-sm font-light tracking-wide';
 
   const screen2Class = (i: number) => {
     if (i === 0) return 'text-red-400 text-3xl font-bold tracking-widest';
@@ -122,6 +123,7 @@ export default function Ending() {
               lines={screenLines[2]}
               getLineClass={screen2Class}
               onComplete={handleScreenComplete}
+              slideUp={false}
             />
           )}
         </motion.div>
