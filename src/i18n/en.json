@@ -29,33 +29,27 @@
     "hint": "Tap a bomb to learn more",
     "close": "Close",
     "anxiety": {
-      "name": "Anxiety",
-      "when": "Facing uncertain situations",
+      "name": "Anxiety Bomb",
       "description": "Born when you don't know what will happen, when things feel out of control. Anxiety builds quietly until it suddenly doesn't."
     },
     "burden": {
-      "name": "Burden",
-      "when": "Under pressure to perform",
+      "name": "Burden Bomb",
       "description": "Tasks undone, expectations unmet, weight unspoken. It forms when you carry too much alone."
     },
     "injustice": {
-      "name": "Injustice",
-      "when": "Wronged but unable to speak",
+      "name": "Injustice Bomb",
       "description": "Moments where you were at no fault yet had to endure. Suppressed protests harden inside this one."
     },
     "helplessness": {
-      "name": "Helplessness",
-      "when": "When nothing seems to change",
+      "name": "Helplessness Bomb",
       "description": "When effort doesn't reach. When giving up feels like the only choice left."
     },
     "selfBlame": {
-      "name": "Self-Blame",
-      "when": "When you turn anger inward",
+      "name": "Self-Blame Bomb",
       "description": "When the thought 'it was my fault' repeats on loop. Quiet, but it cuts the deepest."
     },
     "anger": {
-      "name": "Anger",
-      "when": "When you can't express how you feel",
+      "name": "Anger Bomb",
       "description": "Swallowed rage doesn't disappear. The longer it's suppressed, the bigger and more sudden the explosion."
     }
   },
