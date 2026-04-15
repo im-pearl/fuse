@@ -16,14 +16,16 @@ const EMOTION_ORDER: EmotionType[] = [
 
 interface Props {
   bombs: Bomb[];
+  newBombEmotions?: EmotionType[];
   onClose: () => void;
 }
 
-export default function BombInventory({ bombs, onClose }: Props) {
+export default function BombInventory({ bombs, newBombEmotions = [], onClose }: Props) {
   const [selected, setSelected] = useState<EmotionType | null>(null);
   const { t } = useTranslation();
 
   const activatedSet = new Set(bombs.map((b) => b.emotion));
+  const newSet = new Set(newBombEmotions);
 
   return (
     <motion.div
@@ -51,12 +53,13 @@ export default function BombInventory({ bombs, onClose }: Props) {
         <div className="grid grid-cols-3 gap-4 w-full">
           {EMOTION_ORDER.map((emotion) => {
             const isActive = activatedSet.has(emotion);
+            const isNew = newSet.has(emotion);
             return (
               <button
                 key={emotion}
                 onClick={() => isActive ? setSelected(emotion) : undefined}
                 className={`
-                  aspect-square rounded-lg border flex items-center justify-center text-3xl
+                  relative aspect-square rounded-lg border flex items-center justify-center text-3xl
                   transition-all duration-150
                   ${isActive
                     ? 'border-white/25 bg-white/5 hover:bg-white/10 active:scale-95 cursor-pointer'
@@ -65,6 +68,11 @@ export default function BombInventory({ bombs, onClose }: Props) {
                 `}
               >
                 {isActive && '💣'}
+                {isNew && (
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white leading-none">
+                    N
+                  </span>
+                )}
               </button>
             );
           })}
