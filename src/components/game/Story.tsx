@@ -11,7 +11,7 @@ export default function Story() {
   const [stage, setStage] = useState<'video' | 'text'>('video');
   const [lineIndex, setLineIndex] = useState(0);
 
-  const textLines = [t('story.sub2a'), t('story.sub2b')];
+  const textLines = [t('story.sub2a'), t('story.sub2b'), t('story.sub2c')];
 
   // 5초 후 비디오 → 텍스트 전환
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function Story() {
   }, [stage, lineIndex]);
 
   return (
-    <div className="relative h-full overflow-hidden bg-black">
+    <div className="relative h-full overflow-hidden bg-[#14121a]">
       {/* 비디오 */}
       <AnimatePresence>
         {stage === 'video' && (
