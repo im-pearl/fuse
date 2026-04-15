@@ -63,7 +63,8 @@
     },
     "screen2": {
       "line1": "Explosions always come",
-      "line2": "later, suddenly"
+      "line2": "later,",
+      "line3": "suddenly"
     },
     "screen3": {
       "line1": "GAME OVER",

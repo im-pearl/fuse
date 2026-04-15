@@ -63,7 +63,8 @@
     },
     "screen2": {
       "line1": "폭발은 늘",
-      "line2": "나중에, 갑자기"
+      "line2": "나중에",
+      "line3": "갑자기"
     },
     "screen3": {
       "line1": "GAME OVER",
