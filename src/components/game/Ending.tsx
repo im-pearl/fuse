@@ -28,23 +28,38 @@ function ScreenContent({ lines, lineDelay = 1200, getLineClass, onComplete, slid
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lineIndex]);
 
-  return (
-    <>
-      {lines.slice(0, lineIndex).map((line, i) =>
-        line === '' ? (
-          <div key={i} className="h-3" />
-        ) : (
+  if (slideUp) {
+    return (
+      <>
+        {lines.slice(0, lineIndex).map((line, i) => (
           <motion.p
             key={i}
             className={`text-center leading-relaxed ${getLineClass(i)}`}
-            initial={slideUp ? { opacity: 0, y: 8 } : { opacity: 0 }}
-            animate={slideUp ? { opacity: 1, y: 0 } : { opacity: 1 }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             {line}
           </motion.p>
-        )
-      )}
+        ))}
+      </>
+    );
+  }
+
+  // slideUp=false: 모든 줄 미리 렌더링 → 레이아웃 고정, opacity만 순서대로 켜짐
+  return (
+    <>
+      {lines.map((line, i) => (
+        <motion.p
+          key={i}
+          className={`text-center leading-relaxed ${getLineClass(i)}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: i < lineIndex ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {line}
+        </motion.p>
+      ))}
     </>
   );
 }
@@ -66,7 +81,6 @@ export default function Ending() {
     [
       t('ending.screen2.line1'),
       t('ending.screen2.line2'),
-      '',
       t('ending.screen2.line3'),
     ],
     [
