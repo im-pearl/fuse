@@ -44,18 +44,6 @@ export const days: DayData[] = [
           en: "I'm saying this because I'm worried. Take a break. But can you even? lol",
         },
       },
-      {
-        id: 'd1e4',
-        npc: 'system',
-        dialogue: {
-          ko: '[야근 확정]',
-          en: '[Overtime confirmed]',
-        },
-        followUpDialogue: {
-          ko: '',
-          en: '',
-        },
-      },
     ],
   },
   {
@@ -115,18 +103,6 @@ export const days: DayData[] = [
         followUpDialogue: {
           ko: '요즘 젊은 애들은 왜 결혼을 안 하려고 하는지 모르겠어. 나 때는 다 했는데.',
           en: "I don't get why young people don't want to get married these days. Everyone did in my time.",
-        },
-      },
-      {
-        id: 'd2e5',
-        npc: 'system',
-        dialogue: {
-          ko: '[또 야근 확정]',
-          en: '[Overtime confirmed again]',
-        },
-        followUpDialogue: {
-          ko: '',
-          en: '',
         },
       },
     ],
