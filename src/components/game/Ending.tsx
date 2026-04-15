@@ -47,8 +47,6 @@ function ScreenContent({
 
 export default function Ending() {
   const [screen, setScreen] = useState(0);
-  const [showRestart, setShowRestart] = useState(false);
-  const reset = useGameStore((s) => s.reset);
   const { t } = useTranslation();
 
   const screens = [
@@ -70,8 +68,6 @@ export default function Ending() {
   const handleScreenComplete = () => {
     if (screen < screens.length - 1) {
       setTimeout(() => setScreen((s) => s + 1), 800);
-    } else {
-      setTimeout(() => setShowRestart(true), 1500);
     }
   };
 
@@ -97,17 +93,6 @@ export default function Ending() {
         </motion.div>
       </AnimatePresence>
 
-      {showRestart && (
-        <motion.button
-          onClick={reset}
-          className="mt-10 px-8 py-3 border border-white/30 text-white/60 hover:text-white hover:bg-white/10 transition-colors text-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-        >
-          {t('ending.restart')}
-        </motion.button>
-      )}
     </div>
   );
 }
