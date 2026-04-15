@@ -8,8 +8,6 @@ export type EmotionType =
 
 export type GamePhase =
   | 'language'
-  | 'name'
-  | 'prologue'
   | 'day'
   | 'gameOver'
   | 'ending';

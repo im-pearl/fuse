@@ -32,7 +32,7 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
     >
       {/* 헤더 */}
       <div className="flex items-center justify-between px-5 py-4">
-        <span className="text-white/60 text-xs tracking-[0.2em] uppercase">
+        <span className="text-white/60 text-xs tracking-wide uppercase">
           {t('bombs.inventory')}
         </span>
         <button

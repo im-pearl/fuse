@@ -50,9 +50,9 @@ function StaticDialogue({ npcId, text, locale }: { npcId: NpcId; text: LocaleTex
 }
 
 function DayIntro({
-  day, playerName, locale, onComplete,
+  day, locale, onComplete,
 }: {
-  day: number; playerName: string; locale: Locale; onComplete: () => void;
+  day: number; locale: Locale; onComplete: () => void;
 }) {
   const opening = dayOpenings[day] ?? { ko: '...', en: '...' };
   const { displayed, isDone, skip } = useTypingEffect(opening[locale]);
@@ -60,11 +60,10 @@ function DayIntro({
 
   return (
     <div className="flex flex-col gap-3 w-full" onClick={handleClick}>
-      <span className="text-xs text-white/25 tracking-widest">{playerName}</span>
       <div className="bg-black/60 border border-white/10 rounded-lg p-4 min-h-[80px] relative">
         <p className="text-white/55 text-sm italic leading-relaxed pr-4">
-          {displayed}
-          {!isDone && <span className="animate-pulse">|</span>}
+          ({displayed}
+          {!isDone && <span className="animate-pulse">|</span>})
         </p>
         {isDone && (
           <motion.span
@@ -96,8 +95,14 @@ export default function DayScreen() {
   const [showInventory, setShowInventory] = useState(false);
   const [generatedFollowUp, setGeneratedFollowUp] = useState<LocaleText | null>(null);
   const [dayIntroActive, setDayIntroActive] = useState(true);
+  const [dayIntroVisible, setDayIntroVisible] = useState(false);
 
-  useEffect(() => { setDayIntroActive(true); }, [currentDay]);
+  useEffect(() => {
+    setDayIntroActive(true);
+    setDayIntroVisible(false);
+    const timer = setTimeout(() => setDayIntroVisible(true), 1000);
+    return () => clearTimeout(timer);
+  }, [currentDay]);
 
   /* ── 파생 상태 ── */
   const dayData = days[currentDay];
@@ -199,7 +204,7 @@ export default function DayScreen() {
             alt=""
             className="absolute z-[1] pointer-events-none"
             style={{
-              bottom: '24%',
+              bottom: '22%',
               width: 220,
               ...(npc.position === 'left' ? { left: 40 } : { right: 40 }),
             }}
@@ -224,10 +229,10 @@ export default function DayScreen() {
           aria-label="감정 보관함"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="7" width="16" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M2 10h16" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M7 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M8 10v2h4v-2" stroke="currentColor" strokeWidth="1.2"/>
+            <rect x="2" y="9" width="16" height="9" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M5 9V7h10v2" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+            <path d="M2 12h16" stroke="currentColor" strokeWidth="1"/>
+            <path d="M8 9v1.5h4V9" stroke="currentColor" strokeWidth="1" strokeLinejoin="round"/>
           </svg>
           {newBombEmotions.length > 0 && (
             <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-400 rounded-full" />
@@ -245,12 +250,13 @@ export default function DayScreen() {
       {/* 메인 컨텐츠 */}
       {dayIntroActive ? (
         <div className="flex-1 flex flex-col justify-end px-4 pb-4 relative z-[2]">
-          <DayIntro
-            day={currentDay}
-            playerName={playerFullName}
-            locale={locale}
-            onComplete={() => setDayIntroActive(false)}
-          />
+          {dayIntroVisible && (
+            <DayIntro
+              day={currentDay}
+              locale={locale}
+              onComplete={() => setDayIntroActive(false)}
+            />
+          )}
         </div>
       ) : isShowingResult ? (
         <div className="flex-1 flex items-center justify-center px-4 pb-4 relative z-[2]">
@@ -273,7 +279,7 @@ export default function DayScreen() {
               <>
                 <StaticDialogue npcId={event.npc} text={filledDialogue} locale={locale} />
                 {filledInnerThought && (
-                  <p className="text-white/30 text-xs italic text-center mt-3">{filledInnerThought[locale]}</p>
+                  <p className="text-white/30 text-xs italic text-center mt-3">({filledInnerThought[locale]})</p>
                 )}
               </>
             )}

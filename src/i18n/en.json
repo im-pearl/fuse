@@ -11,10 +11,6 @@
     "placeholder": "Name",
     "confirm": "Start"
   },
-  "prologue": {
-    "line1": "1592, Gyeongju.",
-    "start": "Start Game"
-  },
   "game": {
     "day": "Day {day}",
     "inputPlaceholder": "Type your response...",
