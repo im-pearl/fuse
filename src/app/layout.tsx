@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className="h-full">
+      <head>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/neodgm/neodgm-pro-webfont@latest/neodgm_pro/style.css" />
+      </head>
       <body className="h-full bg-black flex items-center justify-center">
         {/* 모바일 비율 컨테이너 — 항상 세로 */}
         <div className="w-full max-w-[430px] h-full max-h-dvh bg-[#14121a] relative overflow-hidden">

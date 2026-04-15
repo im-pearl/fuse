@@ -194,7 +194,7 @@ export default function DayScreen() {
       {/* 인벤토리 오버레이 */}
       <AnimatePresence>
         {showInventory && (
-          <BombInventory bombs={bombs} onClose={() => setShowInventory(false)} />
+          <BombInventory bombs={bombs} newBombEmotions={newBombEmotions} onClose={() => setShowInventory(false)} />
         )}
       </AnimatePresence>
 
