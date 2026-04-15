@@ -61,7 +61,7 @@ export default function DialogueBox({ npcId, text, locale, onComplete, innerThou
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          {innerThought[locale]}
+          ({innerThought[locale]})
         </motion.p>
       )}
     </div>
