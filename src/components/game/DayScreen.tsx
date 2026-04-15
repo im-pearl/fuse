@@ -36,12 +36,14 @@ function LoadingDots() {
 function StaticDialogue({ npcId, text, locale }: { npcId: NpcId; text: LocaleText; locale: Locale }) {
   const npc = npcs[npcId];
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-sm font-bold" style={{ color: npc.color }}>
-        {npc.name[locale]}
-      </span>
-      <div className="bg-[#14121a]/80 backdrop-blur-sm border border-white/10 rounded-lg p-4 min-h-[80px]">
-        <p className="text-white/70 text-sm leading-relaxed pr-4">{text[locale]}</p>
+    <div className="bg-[#14121a]/80 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden">
+      <div className="px-4 pt-3 pb-1">
+        <span className="text-xs font-bold tracking-wide" style={{ color: npc.color }}>
+          {npc.name[locale]}
+        </span>
+      </div>
+      <div className="px-4 pt-1 pb-3 min-h-[52px]">
+        <p className="text-white/70 text-sm leading-relaxed">{text[locale]}</p>
       </div>
     </div>
   );
@@ -197,7 +199,7 @@ export default function DayScreen() {
             alt=""
             className="absolute z-[1] pointer-events-none"
             style={{
-              bottom: '20%',
+              bottom: '24%',
               width: 220,
               ...(npc.position === 'left' ? { left: 40 } : { right: 40 }),
             }}
@@ -212,8 +214,8 @@ export default function DayScreen() {
       {/* 레이어 2: UI ─────────────────────────────────── */}
 
       {/* 헤더 */}
-      <div className="flex items-center justify-between py-3 px-4 border-b border-white/10 shrink-0 relative z-[2] bg-[#14121a]/70">
-        <span className="text-white/40 text-xs tracking-widest">
+      <div className="flex items-center justify-between py-3 px-4 shrink-0 relative z-[2] bg-[#14121a]/70">
+        <span className="text-white/40 text-sm tracking-widest">
           {t('game.day', { day: String(currentDay + 1) })}
         </span>
         <button

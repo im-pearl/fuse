@@ -6,12 +6,7 @@ import { Bomb, EmotionType } from '@/types/game';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const EMOTION_ORDER: EmotionType[] = [
-  'anxiety',
-  'burden',
-  'injustice',
-  'helplessness',
-  'selfBlame',
-  'anger',
+  'anxiety', 'burden', 'injustice', 'helplessness', 'selfBlame', 'anger',
 ];
 
 interface Props {
@@ -36,7 +31,7 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
       transition={{ duration: 0.2 }}
     >
       {/* 헤더 */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+      <div className="flex items-center justify-between px-5 py-4">
         <span className="text-white/60 text-xs tracking-[0.2em] uppercase">
           {t('bombs.inventory')}
         </span>
@@ -87,7 +82,6 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
       <AnimatePresence>
         {selected && (
           <>
-            {/* 카드 뒤 딤 영역 */}
             <motion.div
               className="absolute inset-0 z-10"
               initial={{ opacity: 0 }}
@@ -95,43 +89,33 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
               exit={{ opacity: 0 }}
               onClick={() => setSelected(null)}
             />
-
-            {/* 카드 */}
             <motion.div
-              className="absolute z-20 inset-x-6 top-1/2 -translate-y-1/2 bg-[#1a1824] border border-white/20 rounded-xl p-6 flex flex-col gap-5"
+              className="absolute z-20 inset-x-6 top-1/2 -translate-y-1/2 bg-[#1a1824] border border-white/20 rounded-xl p-6 flex flex-col gap-4"
               initial={{ opacity: 0, scale: 0.94, y: '-48%' }}
               animate={{ opacity: 1, scale: 1, y: '-50%' }}
               exit={{ opacity: 0, scale: 0.94, y: '-48%' }}
               transition={{ type: 'spring', stiffness: 380, damping: 28 }}
             >
-              {/* 카드 헤더 */}
-              <div className="flex items-center gap-3">
-                <span className="text-4xl">💣</span>
-                <div className="flex flex-col gap-1">
-                  <span className="text-white text-base font-medium leading-none">
-                    {t(`bombs.${selected}.name`)}
-                  </span>
-                  <span className="text-white/35 text-xs leading-none">
-                    {t(`bombs.${selected}.when`)}
-                  </span>
-                </div>
-              </div>
+              {/* X 버튼 */}
+              <button
+                onClick={() => setSelected(null)}
+                className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-white/40 hover:text-white transition-colors text-lg leading-none"
+              >
+                ×
+              </button>
 
-              {/* 구분선 */}
-              <div className="h-px bg-white/10" />
+              {/* 카드 헤더 */}
+              <div className="flex items-center gap-3 pr-6">
+                <span className="text-4xl">💣</span>
+                <span className="text-white text-base font-medium leading-snug">
+                  {t(`bombs.${selected}.name`)}
+                </span>
+              </div>
 
               {/* 설명 */}
               <p className="text-white/65 text-sm leading-relaxed">
                 {t(`bombs.${selected}.description`)}
               </p>
-
-              {/* 닫기 */}
-              <button
-                onClick={() => setSelected(null)}
-                className="self-end text-white/35 hover:text-white/70 text-xs border border-white/15 px-4 py-2 rounded-lg hover:bg-white/5 transition-colors"
-              >
-                {t('bombs.close')}
-              </button>
             </motion.div>
           </>
         )}
