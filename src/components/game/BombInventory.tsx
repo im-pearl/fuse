@@ -43,8 +43,8 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
         </button>
       </div>
 
-      {/* 슬롯 그리드 */}
-      <div className="px-8 pt-2">
+      {/* 슬롯 그리드 + 카드 */}
+      <div className="flex-1 flex flex-col justify-center px-8 gap-4">
         <div className="grid grid-cols-3 gap-4 w-full">
           {EMOTION_ORDER.map((emotion) => {
             const isActive = activatedSet.has(emotion);
@@ -77,16 +77,15 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
           })}
         </div>
 
-        <p className="text-white/20 text-xs tracking-wide text-center mt-4">
+        <p className="text-white/20 text-xs tracking-wide text-center">
           {bombs.length === 0 ? t('bombs.empty') : t('bombs.hint')}
         </p>
-      </div>
 
-      {/* 상세 카드 */}
-      <AnimatePresence>
+        {/* 상세 카드 */}
+        <AnimatePresence>
         {selected && (
           <motion.div
-            className="mx-8 mt-6 bg-[#1a1824] border border-white/20 rounded-xl p-5 flex flex-col gap-3"
+            className="bg-[#1a1824] border border-white/20 rounded-xl p-5 flex flex-col gap-3"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
@@ -104,7 +103,8 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
             </p>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
