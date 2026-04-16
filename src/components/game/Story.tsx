@@ -11,15 +11,13 @@ export default function Story() {
   const [stage, setStage] = useState<'video' | 'text'>('video');
   const [lineIndex, setLineIndex] = useState(0);
 
-  const textLines = [t('story.sub2a'), t('story.sub2b'), 'ㅡ', t('story.sub2c')];
+  const textLines = [t('story.sub2a'), t('story.sub2b'), t('story.sub2c')];
 
-  // 5초 후 비디오 → 텍스트 전환
   useEffect(() => {
     const t1 = setTimeout(() => setStage('text'), 5000);
     return () => clearTimeout(t1);
   }, []);
 
-  // 텍스트 단계: 줄 하나씩 등장 → ending
   useEffect(() => {
     if (stage !== 'text') return;
     if (lineIndex < textLines.length) {
@@ -34,7 +32,6 @@ export default function Story() {
 
   return (
     <div className="relative h-full overflow-hidden bg-[#14121a]">
-      {/* 비디오 */}
       <AnimatePresence>
         {stage === 'video' && (
           <motion.video
@@ -52,10 +49,10 @@ export default function Story() {
       {/* 비디오 자막 (1592년) */}
       {stage === 'video' && (
         <div className="absolute inset-x-0 bottom-10 flex flex-col items-center gap-1 px-4">
-          {[t('story.sub1a'), t('story.sub1b'), 'ㅡ'].map((line, i) => (
+          {[t('story.sub1a'), t('story.sub1b')].map((line, i) => (
             <p
               key={i}
-              className={`text-white text-sm text-center leading-relaxed bg-black/80 px-2 py-0.5 ${i === 1 ? 'italic' : ''} ${i === 2 ? 'text-white/50 text-xs' : ''}`}
+              className={`text-white text-sm text-center leading-relaxed bg-black/80 px-2 py-0.5 ${i === 1 ? 'italic' : ''}`}
             >
               {line}
             </p>
@@ -69,7 +66,7 @@ export default function Story() {
           {textLines.slice(0, lineIndex).map((line, i) => (
             <motion.p
               key={i}
-              className={`text-center leading-relaxed ${i === 1 ? 'text-white/70 text-sm italic' : i === 2 ? 'text-white/40 text-xs' : 'text-white/70 text-sm'}`}
+              className={`text-center leading-relaxed ${i === 1 ? 'text-white/70 text-sm italic' : 'text-white/70 text-sm'}`}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}

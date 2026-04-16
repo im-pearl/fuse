@@ -55,9 +55,9 @@
   },
   "story": {
     "sub1a": "1592년, 왜군들은 비격진천뢰를 보고 생각했다.",
-    "sub1b": "별 거 아닌 것 같은데?",
+    "sub1b": "ㅡ별 거 아닌 것 같은데?",
     "sub2a": "2026년, 당신의 주변 사람들도 당신을 보고 생각했다.",
-    "sub2b": "별 일 아닌 것 같은데?",
+    "sub2b": "ㅡ별 일 아닌 것 같은데?",
     "sub2c": "어쩌면 당신조차도 그렇게 생각했다."
   },
   "ending": {
@@ -68,9 +68,12 @@
     },
     "screen2": {
       "line1": "GAME OVER",
-      "line2": "YOUR FEELINGS ARE NOT CLEARED",
-      "line3": "터지기 전에, 녹이세요"
+      "line2": "YOUR FEELINGS ARE NOT CLEARED"
     },
+    "screen3": {
+      "line1": "터지기 전에, 녹이세요"
+    },
+    "getCode": "코 받기",
     "restart": "다시 시작"
   }
 }

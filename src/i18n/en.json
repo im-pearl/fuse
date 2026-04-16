@@ -55,9 +55,9 @@
   },
   "story": {
     "sub1a": "In 1592, soldiers saw the Bigyeokjincheonroe and thought:",
-    "sub1b": "Doesn't look like much.",
+    "sub1b": "ㅡDoesn't look like much.",
     "sub2a": "In 2026, the people around you looked at you and thought:",
-    "sub2b": "Doesn't seem like a big deal.",
+    "sub2b": "ㅡDoesn't seem like a big deal.",
     "sub2c": "Maybe even you thought the same."
   },
   "ending": {
@@ -68,9 +68,12 @@
     },
     "screen2": {
       "line1": "GAME OVER",
-      "line2": "YOUR FEELINGS ARE NOT CLEARED",
-      "line3": "Before it explodes, let it melt."
+      "line2": "YOUR FEELINGS ARE NOT CLEARED"
     },
-    "restart": "Play Again"
+    "screen3": {
+      "line1": "Before it explodes, let it melt."
+    },
+    "getCode": "Get Code",
+    "restart": "Restart"
   }
 }
