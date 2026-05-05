@@ -17,7 +17,7 @@ export default function CommentOverlay({ comment, onDone }: Props) {
       onClick={onDone}
     >
       <motion.p
-        className="text-white/70 text-sm text-center leading-relaxed italic px-4"
+        className="text-white/70 text-base text-center leading-relaxed px-4 max-w-[20rem] [text-wrap:balance] [word-break:keep-all]"
         initial={{ y: 10 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
