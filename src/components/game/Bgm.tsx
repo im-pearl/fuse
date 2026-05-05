@@ -4,13 +4,11 @@ import { useEffect, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 
 const TRACKS = {
-  opening: '/assets/opening.m4a',
   ending: '/assets/Echoes%20of%20Winter.m4a',
 } as const;
 type TrackKey = keyof typeof TRACKS;
 
 const TARGET_VOLUMES: Record<TrackKey, number> = {
-  opening: 0.25,
   ending: 0.5,
 };
 const FADE_MS = 3000;
@@ -31,14 +29,10 @@ function getAudio(key: TrackKey): HTMLAudioElement | null {
 }
 
 export default function Bgm() {
-  const phase = useGameStore((s) => s.phase);
   const bgmActive = useGameStore((s) => s.bgmActive);
   const fadeRafRef = useRef(0);
 
-  const targetTrack: TrackKey | null =
-    phase === 'language' ? 'opening' :
-    bgmActive ? 'ending' :
-    null;
+  const targetTrack: TrackKey | null = bgmActive ? 'ending' : null;
 
   useEffect(() => {
     cancelAnimationFrame(fadeRafRef.current);

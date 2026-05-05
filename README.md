@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FUSE
 
-## Getting Started
+> 별거 아닌 일들이 감정 폭탄이 되어 굴러온다. AI가 당신의 대응을 지켜보고 있다.
 
-First, run the development server:
+픽셀아트 텍스트 어드벤처 / 심리 시뮬레이션. 모바일 우선 웹게임, 약 5분 플레이.
+조선시대 시한폭탄 **비격진천뢰**를 메타포로, 직장에서 누적되는 감정 폭탄을 다룬다.
+
+기획 상세는 [PROJECT.md](./PROJECT.md), 에셋 가이드는 [ASSETS.md](./ASSETS.md).
+
+---
+
+## 로컬 실행
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# → http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`.env.local`에 Anthropic API 키 설정:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 기술 스택
 
-To learn more about Next.js, take a look at the following resources:
+- Next.js 16 (App Router) / React 19 / TypeScript
+- Tailwind CSS v4
+- Zustand (게임 상태)
+- Framer Motion (애니메이션)
+- Anthropic SDK (`claude-sonnet-4-6`) — NPC 반응 + 감정 분석
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 프리뷰 라우트
 
-## Deploy on Vercel
+- `/` — 본 게임 (언어 선택부터)
+- `/ending` — GameOver → Story → Ending 시퀀스 프리뷰
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 배포
+
+Vercel 권장. 환경 변수 `ANTHROPIC_API_KEY`만 설정하면 돼.

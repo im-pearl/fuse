@@ -23,7 +23,7 @@
 ### 게임 구조
 
 ```
-언어 선택 → 이름 입력 → 프롤로그 → [Day 1 → Day 2 → Day 3] → 게임오버 → 엔딩
+언어 선택 + 이름 입력 (한 화면) → [Day 1 → Day 2 → Day 3] → 게임오버 → 스토리 (1592 영상 + 2026 텍스트) → 엔딩
 ```
 
 Day마다 NPC 이벤트가 순서대로 발생. 각 이벤트마다 플레이어가 두 번 반응하고, Claude가 감정 상태를 판정한다.
@@ -149,12 +149,11 @@ NPC 첫 번째 대사 (정적 텍스트)
 
 | phase | 화면 | 파일 |
 |---|---|---|
-| `language` | 언어 선택 (한국어/English) | `LanguageSelect.tsx` |
-| `name` | 성 + 이름 입력 | `NameInput.tsx` |
-| `prologue` | 1592년 경주 인트로 텍스트 | `Prologue.tsx` |
+| `language` | 언어 선택 + 성/이름 입력 (한 화면) | `LanguageSelect.tsx` |
 | `day` | 메인 게임 루프 | `DayScreen.tsx` |
-| `gameOver` | 폭탄 진동 → 폭발 연출 | `GameOver.tsx` |
-| `ending` | 나레이션 순차 표시 → 재시작 | `Ending.tsx` |
+| `gameOver` | 폭탄 진동 → 폭발 연출 (풀스크린) | `GameOver.tsx` |
+| `story` | 1592 영상 + 자막 → 2026 텍스트 | `Story.tsx` |
+| `ending` | screen1 (폭발은 늘…) → GAME OVER → 녹이러가기/재시작/공유 | `Ending.tsx` |
 
 ---
 
@@ -166,28 +165,36 @@ src/
 │   ├── api/
 │   │   ├── ai/route.ts          감정 분석 + 코멘트 (Claude)
 │   │   └── npc/route.ts         NPC 반응 대사 생성 (Claude)
+│   ├── ending/
+│   │   └── page.tsx             엔딩 시퀀스 프리뷰 라우트 (gameOver→story→ending)
 │   ├── globals.css
-│   ├── layout.tsx               모바일 비율 컨테이너 (max-w-430px, bg #14121a)
+│   ├── layout.tsx               모바일 비율 컨테이너 (max-w-430px, bg #14121a) + <Bgm />
 │   └── page.tsx                 GamePhase별 화면 스위치
 │
 ├── components/
 │   ├── game/
-│   │   ├── BombDisplay.tsx      16슬롯 고정 폭탄 표시 (빈 원 → 💣)
+│   │   ├── Bgm.tsx              BGM 매니저 (opening/ending 두 트랙, 페이드인, 자동재생 우회)
+│   │   ├── BombDisplay.tsx      폭탄 표시 (사용처에 따라)
+│   │   ├── BombInventory.tsx    감정 보관함 오버레이 (폭탄 종류별 설명)
 │   │   ├── CommentOverlay.tsx   AI 나레이터 코멘트 오버레이
 │   │   ├── DayScreen.tsx        메인 게임 루프 (이벤트 플로우 오케스트레이터)
 │   │   ├── DialogueBox.tsx      NPC 대사 (타이핑 효과, 속마음 표시)
-│   │   ├── Ending.tsx           엔딩 나레이션 순차 출력
-│   │   ├── GameOver.tsx         폭탄 진동 → 폭발 → 페이드아웃
+│   │   ├── Ending.tsx           screen1 → EndScreen (GAME OVER ↔ 버튼) 두 슬롯 크로스페이드
+│   │   ├── GameOver.tsx         폭탄 진동 → 폭발 (풀스크린 fixed) → 페이드아웃
 │   │   ├── PlayerInput.tsx      텍스트 입력 (중복 제출 방지: useRef guard + type=button)
-│   │   └── Prologue.tsx         인트로 텍스트 순차 출력
+│   │   └── Story.tsx            1592 영상 + 자막 → 2026 텍스트 시퀀스
 │   └── ui/
-│       ├── LanguageSelect.tsx   한국어/English 선택
-│       └── NameInput.tsx        성(姓) + 이름 두 필드
+│       ├── LanguageSelect.tsx   언어 선택 + 성/이름 입력 통합 화면
+│       └── StudioCredit.tsx     하단 © SIMJI 크레딧
 │
 ├── data/
+│   ├── dayOpenings.ts           Day별 인트로 텍스트
 │   ├── events.ts                Day 1~3 이벤트 시퀀스 데이터
 │   │                            플레이스홀더: {surname}, {firstname}, {particle}
 │   └── npcs.ts                  NPC 프로필 (이름, 역할, 대사 색상)
+│
+├── hooks/
+│   └── useTypingEffect.ts       타이핑 효과 훅 (skip 지원)
 │
 ├── i18n/
 │   ├── ko.json                  한국어 UI 텍스트
@@ -204,7 +211,7 @@ src/
 │                                상태: locale, phase, playerSurname, playerFirstName,
 │                                      currentDay, currentEventIndex, eventPhase,
 │                                      emotions(숨김), bombs, explosionInfo,
-│                                      playerInput1, playerInput2, aiComment
+│                                      playerInput1, playerInput2, aiComment, bgmActive
 │
 └── types/
     └── game.ts                  전체 타입 정의
@@ -264,13 +271,3 @@ npm run dev
 - 바깥 배경: `#000000` (순수 검정)
 - 게임 컨테이너: `#14121a` (짙은 보라빛 다크)
 - 가로 레이아웃 대응 불필요
-
----
-
-## 미완성 / 추후 작업
-
-- [ ] 픽셀아트 에셋 (폰트, NPC 초상화, 폭탄 아이콘, 폭발 애니메이션) → `ASSETS.md` 참고
-- [ ] BGM + 효과음
-- [ ] 엔딩 비격진천뢰 → 배스밤 변환 애니메이션
-- [ ] 프롤로그 씬 (현재는 텍스트만)
-- [ ] Vercel 배포 설정

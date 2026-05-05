@@ -62,7 +62,7 @@ function EndScreen() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const timer = setTimeout(() => setPhase('final'), 2800);
+    const timer = setTimeout(() => setPhase('final'), 5000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -93,7 +93,16 @@ function EndScreen() {
   };
 
   return (
-    <div className="relative flex flex-col items-center gap-8 w-full">
+    <div className="relative flex flex-col items-center gap-6 w-full">
+      {/* 엔딩 애니메이션 (고정) */}
+      <video
+        src="/assets/animation/ending.mp4"
+        autoPlay
+        muted
+        playsInline
+        className="w-[200px] aspect-square object-cover"
+      />
+
       {/* 상단 슬롯: GAME OVER ↔ 터지기 전에 녹이세요 */}
       <div className="relative w-full h-12 flex items-center justify-center">
         <AnimatePresence>
@@ -196,7 +205,17 @@ export default function Ending() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-8">
+    <div className="relative flex flex-col items-center justify-center h-full px-8">
+      {/* GAME OVER 부터 검정 배경 */}
+      {showEnd && (
+        <motion.div
+          className="absolute inset-0 bg-black"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.0 }}
+        />
+      )}
+
       <AnimatePresence mode="wait">
         {!showEnd ? (
           <motion.div
