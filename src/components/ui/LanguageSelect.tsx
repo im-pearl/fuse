@@ -100,7 +100,7 @@ export default function LanguageSelect() {
         {t('nameInput.confirm')}
       </button>
     </motion.div>
-    <StudioCredit variant="presented" />
+    <StudioCredit />
     </>
   );
 }

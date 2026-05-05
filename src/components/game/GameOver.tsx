@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
-import StudioCredit from '@/components/ui/StudioCredit';
 
 const FRAMES = Array.from({ length: 10 }, (_, i) => `/assets/explosion/Circle_explosion${i + 1}.png`);
 
@@ -61,12 +60,12 @@ export default function GameOver() {
         )}
       </AnimatePresence>
 
-      {/* 폭발 프레임 */}
+      {/* 폭발 프레임 — 뷰포트 전체에 표시 (PC에서 컨테이너 벗어남) */}
       <AnimatePresence>
         {stage === 'explode' && (
           <motion.div
             key="explode"
-            className="absolute inset-0 flex items-center justify-center bg-black"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.06 }}
@@ -75,8 +74,8 @@ export default function GameOver() {
             <img
               src={FRAMES[frameIndex]}
               alt=""
-              className="w-full aspect-square object-contain"
-              style={{ imageRendering: 'pixelated' }}
+              className="h-full aspect-square object-contain max-w-none"
+              style={{ imageRendering: 'pixelated', transform: 'scale(1.15)' }}
             />
           </motion.div>
         )}
@@ -95,7 +94,6 @@ export default function GameOver() {
         )}
       </AnimatePresence>
 
-      <StudioCredit />
     </div>
   );
 }

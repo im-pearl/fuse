@@ -7,6 +7,7 @@ import { useTranslation } from '@/i18n/useTranslation';
 
 export default function Story() {
   const setPhase = useGameStore((s) => s.setPhase);
+  const startBgm = useGameStore((s) => s.startBgm);
   const { t } = useTranslation();
   const [stage, setStage] = useState<'video' | 'text'>('video');
   const [lineIndex, setLineIndex] = useState(0);
@@ -14,17 +15,17 @@ export default function Story() {
   const textLines = [t('story.sub2a'), t('story.sub2b'), t('story.sub2c')];
 
   useEffect(() => {
-    const t1 = setTimeout(() => setStage('text'), 5000);
+    const t1 = setTimeout(() => startBgm(), 3500);
     return () => clearTimeout(t1);
-  }, []);
+  }, [startBgm]);
 
   useEffect(() => {
     if (stage !== 'text') return;
     if (lineIndex < textLines.length) {
-      const t1 = setTimeout(() => setLineIndex((i) => i + 1), 1200);
+      const t1 = setTimeout(() => setLineIndex((i) => i + 1), 1800);
       return () => clearTimeout(t1);
     } else {
-      const t1 = setTimeout(() => setPhase('ending'), 1500);
+      const t1 = setTimeout(() => setPhase('ending'), 2400);
       return () => clearTimeout(t1);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,6 +40,7 @@ export default function Story() {
             autoPlay
             muted
             playsInline
+            onEnded={() => setStage('text')}
             className="absolute inset-0 w-full h-full object-cover"
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
@@ -69,7 +71,7 @@ export default function Story() {
               className={`text-center leading-relaxed ${i === 1 ? 'text-white/70 text-sm italic' : 'text-white/70 text-sm'}`}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.9 }}
             >
               {line}
             </motion.p>

@@ -23,7 +23,7 @@ function generateCode(seed: string): string {
 
 function ScreenContent({
   lines,
-  lineDelay = 1200,
+  lineDelay = 1800,
   getLineClass,
   onComplete,
 }: {
@@ -52,7 +52,7 @@ function ScreenContent({
           className={`text-center leading-relaxed ${getLineClass(i)}`}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.9 }}
         >
           {line}
         </motion.p>
@@ -87,7 +87,7 @@ const FADE = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
   exit: { opacity: 0 },
-  transition: { duration: 0.6 },
+  transition: { duration: 1.0 },
 };
 
 function EndScreen() {
@@ -104,7 +104,7 @@ function EndScreen() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const timer = setTimeout(() => setPhase('final'), 1800);
+    const timer = setTimeout(() => setPhase('final'), 2800);
     return () => clearTimeout(timer);
   }, []);
 
@@ -238,7 +238,7 @@ export default function Ending() {
   ];
 
   const handleScreen1Complete = () => {
-    setTimeout(() => setShowEnd(true), 800);
+    setTimeout(() => setShowEnd(true), 1400);
   };
 
   return (
@@ -251,7 +251,7 @@ export default function Ending() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 1.0 }}
           >
             <ScreenContent
               lines={screen1Lines}
@@ -267,14 +267,13 @@ export default function Ending() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 1.0 }}
           >
             <EndScreen />
+            <StudioCredit />
           </motion.div>
         )}
       </AnimatePresence>
-
-      <StudioCredit />
     </div>
   );
 }

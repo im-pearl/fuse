@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import Bgm from '@/components/game/Bgm';
 
 export const metadata: Metadata = {
   title: 'FUSE',
@@ -28,6 +29,7 @@ export default function RootLayout({
         <div className="w-full max-w-[430px] h-full max-h-dvh bg-[#14121a] relative overflow-hidden">
           {children}
         </div>
+        <Bgm />
       </body>
     </html>
   );

@@ -34,6 +34,8 @@ interface GameState {
   playerInput2: string;
   aiComment: string;
 
+  bgmActive: boolean;
+
   setLocale: (locale: Locale) => void;
   setPlayerInfo: (surname: string, firstName: string) => void;
   setPhase: (phase: GamePhase) => void;
@@ -42,6 +44,7 @@ interface GameState {
   setPlayerInput2: (input: string) => void;
   applyAIResult: (deltas: EmotionDelta[], comment: string) => void;
   advanceEvent: () => void;
+  startBgm: () => void;
   reset: () => void;
 }
 
@@ -71,6 +74,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   playerInput1: '',
   playerInput2: '',
   aiComment: '',
+
+  bgmActive: false,
 
   setLocale: (locale) => set({ locale }),
   setPlayerInfo: (surname, firstName) => set({ playerSurname: surname, playerFirstName: firstName }),
@@ -141,6 +146,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
 
+  startBgm: () => set({ bgmActive: true }),
+
   reset: () =>
     set({
       phase: 'language',
@@ -155,5 +162,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       playerInput1: '',
       playerInput2: '',
       aiComment: '',
+      bgmActive: false,
     }),
 }));
