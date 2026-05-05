@@ -43,7 +43,7 @@ function StaticDialogue({ npcId, text, locale }: { npcId: NpcId; text: LocaleTex
         </span>
       </div>
       <div className="px-4 pt-1 pb-3 min-h-[52px]">
-        <p className="text-white/70 text-sm leading-relaxed">{text[locale]}</p>
+        <p className="text-white/90 text-sm leading-relaxed pr-4 [word-break:keep-all]">{text[locale]}</p>
       </div>
     </div>
   );

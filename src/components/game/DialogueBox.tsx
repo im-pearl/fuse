@@ -38,7 +38,7 @@ export default function DialogueBox({ npcId, text, locale, onComplete, innerThou
           </span>
         </div>
         <div className="px-4 pt-1 pb-3 min-h-[52px] relative">
-          <p className="text-white/90 text-sm leading-relaxed pr-4">
+          <p className="text-white/90 text-sm leading-relaxed pr-4 [word-break:keep-all]">
             {displayed}
             {!isDone && <span className="animate-pulse">|</span>}
           </p>

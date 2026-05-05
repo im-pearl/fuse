@@ -23,17 +23,27 @@ function generateCode(seed: string): string {
 function ScreenContent({
   lines,
   lineDelay = 1200,
+  simultaneous = false,
+  holdDuration = 1800,
+  fadeOnly = false,
   getLineClass,
   onComplete,
 }: {
   lines: string[];
   lineDelay?: number;
+  simultaneous?: boolean;
+  holdDuration?: number;
+  fadeOnly?: boolean;
   getLineClass: (i: number) => string;
   onComplete: () => void;
 }) {
-  const [lineIndex, setLineIndex] = useState(0);
+  const [lineIndex, setLineIndex] = useState(simultaneous ? lines.length : 0);
 
   useEffect(() => {
+    if (simultaneous) {
+      const timer = setTimeout(onComplete, holdDuration);
+      return () => clearTimeout(timer);
+    }
     if (lineIndex < lines.length) {
       const timer = setTimeout(() => setLineIndex((i) => i + 1), lineDelay);
       return () => clearTimeout(timer);
@@ -49,8 +59,8 @@ function ScreenContent({
         <motion.p
           key={i}
           className={`text-center leading-relaxed ${getLineClass(i)}`}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={fadeOnly ? { opacity: 0 } : { opacity: 0, y: 8 }}
+          animate={fadeOnly ? { opacity: 1 } : { opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           {line}
@@ -83,8 +93,8 @@ function CodeModal({ code, onClose }: { code: string; onClose: () => void }) {
 }
 
 function FinalScreen({ onComplete }: { onComplete: () => void }) {
-  const [showButtons, setShowButtons] = useState(false);
   const [showCode, setShowCode] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const reset = useGameStore((s) => s.reset);
   const bombs = useGameStore((s) => s.bombs);
   const { t } = useTranslation();
@@ -94,71 +104,91 @@ function FinalScreen({ onComplete }: { onComplete: () => void }) {
     return generateCode(seed || String(Date.now()));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    const t1 = setTimeout(() => setShowButtons(true), 1400);
-    return () => clearTimeout(t1);
-  }, []);
-
   useEffect(() => { onComplete(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({ title: 'FUSE', url: window.location.origin }).catch(() => {});
-    } else {
-      await navigator.clipboard.writeText(window.location.origin).catch(() => {});
+    const url = window.location.origin;
+    const shareData = {
+      title: t('title'),
+      text: t('subtitle'),
+      url,
+    };
+
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        if ((err as Error)?.name === 'AbortError') return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(`${shareData.text} ${url}`);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 1800);
+    } catch {
+      // ignore
     }
   };
 
   return (
     <div className="relative flex flex-col items-center gap-8 w-full">
-      <motion.p
-        className="text-white text-base text-center"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <motion.div
+        className="flex flex-col items-center gap-8 w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
       >
-        {t('ending.screen3.line1')}
-      </motion.p>
+        <p className="text-white text-base text-center">
+          {t('ending.screen3.line1')}
+        </p>
 
-      <AnimatePresence>
-        {showButtons && (
-          <motion.div
-            className="flex items-center gap-3"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowCode(true)}
+            className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
           >
-            <button
-              onClick={() => setShowCode(true)}
-              className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
-            >
-              {t('ending.melt')}
-            </button>
-            <button
-              onClick={reset}
-              className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
-            >
-              {t('ending.restart')}
-            </button>
-            <button
-              onClick={handleShare}
-              className="w-9 h-9 flex items-center justify-center border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors"
-              aria-label="share"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="13" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-                <circle cx="13" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-                <circle cx="3" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-                <line x1="4.3" y1="7.3" x2="11.7" y2="3.7" stroke="currentColor" strokeWidth="1.3"/>
-                <line x1="4.3" y1="8.7" x2="11.7" y2="12.3" stroke="currentColor" strokeWidth="1.3"/>
-              </svg>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {t('ending.melt')}
+          </button>
+          <button
+            onClick={reset}
+            className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
+          >
+            {t('ending.restart')}
+          </button>
+          <button
+            onClick={handleShare}
+            className="w-9 h-9 flex items-center justify-center border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors"
+            aria-label="share"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="13" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
+              <circle cx="13" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
+              <circle cx="3" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
+              <line x1="4.3" y1="7.3" x2="11.7" y2="3.7" stroke="currentColor" strokeWidth="1.3"/>
+              <line x1="4.3" y1="8.7" x2="11.7" y2="12.3" stroke="currentColor" strokeWidth="1.3"/>
+            </svg>
+          </button>
+        </div>
+      </motion.div>
 
       <AnimatePresence>
         {showCode && <CodeModal code={code} onClose={() => setShowCode(false)} />}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/10 border border-white/20 rounded text-white/80 text-xs whitespace-nowrap"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            {t('ending.linkCopied')}
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
@@ -172,10 +202,12 @@ export default function Ending() {
     {
       lines: [t('ending.screen1.line1'), t('ending.screen1.line2'), t('ending.screen1.line3')],
       lineDelay: 1000,
-      getLineClass: () => 'text-white/90 text-sm font-light tracking-wide',
+      getLineClass: () => 'text-white/90 text-lg font-light tracking-wide',
     },
     {
       lines: [t('ending.screen2.line1'), t('ending.screen2.line2')],
+      simultaneous: true,
+      fadeOnly: true,
       getLineClass: (i: number) =>
         i === 0 ? 'text-red-400 text-3xl font-bold tracking-widest' : 'text-white/50 text-xs tracking-widest',
     },
@@ -204,6 +236,8 @@ export default function Ending() {
             <ScreenContent
               lines={screens[screen].lines}
               lineDelay={screens[screen].lineDelay}
+              simultaneous={screens[screen].simultaneous}
+              fadeOnly={screens[screen].fadeOnly}
               getLineClass={screens[screen].getLineClass}
               onComplete={handleScreenComplete}
             />
