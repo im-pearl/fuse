@@ -63,7 +63,7 @@ function EndScreen() {
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase('final'), 4000);
-    const t2 = setTimeout(() => setShowButtons(true), 4800);
+    const t2 = setTimeout(() => setShowButtons(true), 5400);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -71,7 +71,7 @@ function EndScreen() {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center w-full">
+    <div className="relative flex flex-col items-center w-full h-[280px]">
       {/* 엔딩 애니메이션 (고정) */}
       <video
         src="/assets/animation/ending.mp4"
@@ -82,7 +82,11 @@ function EndScreen() {
       />
 
       {/* 상단 슬롯: GAME OVER ↔ 터지기 전에 녹이세요 */}
-      <div className="relative w-full h-12 flex items-center justify-center mb-6">
+      <div
+        className={`relative w-full h-12 flex items-center justify-center transition-[margin] duration-700 ${
+          phase === 'gameOver' ? 'mb-0' : 'mb-6'
+        }`}
+      >
         <AnimatePresence>
           {phase === 'gameOver' ? (
             <motion.p
