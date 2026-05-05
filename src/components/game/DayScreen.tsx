@@ -61,7 +61,7 @@ function DayIntro({
   return (
     <div className="flex flex-col gap-3 w-full" onClick={handleClick}>
       <div className="bg-black/60 border border-white/10 rounded-lg p-4 min-h-[80px] relative">
-        <p className="text-white/55 text-sm italic leading-relaxed pr-4">
+        <p className="text-white/55 text-sm italic leading-relaxed pr-4 [word-break:keep-all]">
           ({displayed}
           {!isDone && <span className="animate-pulse">|</span>})
         </p>
@@ -279,7 +279,7 @@ export default function DayScreen() {
               <>
                 <StaticDialogue npcId={event.npc} text={filledDialogue} locale={locale} />
                 {filledInnerThought && (
-                  <p className="text-white/30 text-xs italic text-center mt-3">({filledInnerThought[locale]})</p>
+                  <p className="text-white/30 text-xs italic text-center mt-3 [word-break:keep-all]">({filledInnerThought[locale]})</p>
                 )}
               </>
             )}

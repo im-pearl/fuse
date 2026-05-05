@@ -54,7 +54,7 @@ export default function Story() {
           {[t('story.sub1a'), t('story.sub1b')].map((line, i) => (
             <p
               key={i}
-              className={`text-white text-sm text-center leading-relaxed bg-black/80 px-2 py-0.5 ${i === 1 ? 'italic' : ''}`}
+              className={`text-white text-sm text-center leading-relaxed bg-black/80 px-2 py-0.5 [word-break:keep-all] ${i === 1 ? 'italic' : ''}`}
             >
               {line}
             </p>
@@ -68,7 +68,7 @@ export default function Story() {
           {textLines.slice(0, lineIndex).map((line, i) => (
             <motion.p
               key={i}
-              className={`text-center leading-relaxed ${i === 1 ? 'text-white/70 text-sm italic' : 'text-white/70 text-sm'}`}
+              className={`text-center leading-relaxed [word-break:keep-all] ${i === 1 ? 'text-white/70 text-sm italic' : 'text-white/70 text-sm'}`}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9 }}

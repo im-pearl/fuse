@@ -1,25 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QRCodeSVG } from 'qrcode.react';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from '@/i18n/useTranslation';
 import StudioCredit from '@/components/ui/StudioCredit';
 
-function generateCode(seed: string): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  }
-  let code = '';
-  for (let i = 0; i < 8; i++) {
-    hash = (hash * 1664525 + 1013904223) >>> 0;
-    code += chars[hash % chars.length];
-  }
-  return code.slice(0, 4) + '-' + code.slice(4);
-}
+const MELT_URL = 'https://museumshop.or.kr';
 
 function ScreenContent({
   lines,
@@ -49,7 +36,7 @@ function ScreenContent({
       {lines.slice(0, lineIndex).map((line, i) => (
         <motion.p
           key={i}
-          className={`text-center leading-relaxed ${getLineClass(i)}`}
+          className={`text-center leading-relaxed [word-break:keep-all] ${getLineClass(i)}`}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
@@ -58,28 +45,6 @@ function ScreenContent({
         </motion.p>
       ))}
     </>
-  );
-}
-
-function CodeModal({ code, onClose }: { code: string; onClose: () => void }) {
-  return (
-    <motion.div
-      className="absolute inset-0 z-50 bg-black/90 flex flex-col items-center justify-center gap-6 px-8"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      onClick={onClose}
-    >
-      <p className="text-white/50 text-xs tracking-widest uppercase">your code</p>
-      <p className="text-white text-3xl font-bold tracking-[0.2em]">{code}</p>
-      <div className="p-3 bg-white rounded">
-        <QRCodeSVG value={code} size={160} />
-      </div>
-      <p className="text-white/30 text-xs text-center leading-relaxed">
-        구매처에서 이 코드를 제시하면{'\n'}당신에게 맞는 배쓰밤을 받을 수 있어요
-      </p>
-    </motion.div>
   );
 }
 
@@ -92,16 +57,9 @@ const FADE = {
 
 function EndScreen() {
   const [phase, setPhase] = useState<'gameOver' | 'final'>('gameOver');
-  const [showCode, setShowCode] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const reset = useGameStore((s) => s.reset);
-  const bombs = useGameStore((s) => s.bombs);
   const { t } = useTranslation();
-
-  const code = useMemo(() => {
-    const seed = bombs.map((b) => b.emotion + b.acquiredAt).join('');
-    return generateCode(seed || String(Date.now()));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const timer = setTimeout(() => setPhase('final'), 2800);
@@ -150,7 +108,7 @@ function EndScreen() {
           ) : (
             <motion.p
               key="meltLine"
-              className="absolute text-white text-base text-center"
+              className="absolute text-white text-base text-center [word-break:keep-all]"
               {...FADE}
             >
               {t('ending.screen3.line1')}
@@ -177,7 +135,7 @@ function EndScreen() {
               {...FADE}
             >
               <button
-                onClick={() => setShowCode(true)}
+                onClick={() => window.open(MELT_URL, '_blank', 'noopener,noreferrer')}
                 className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
               >
                 {t('ending.melt')}
@@ -205,10 +163,6 @@ function EndScreen() {
           )}
         </AnimatePresence>
       </div>
-
-      <AnimatePresence>
-        {showCode && <CodeModal code={code} onClose={() => setShowCode(false)} />}
-      </AnimatePresence>
 
       <AnimatePresence>
         {showToast && (

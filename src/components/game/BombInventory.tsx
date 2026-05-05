@@ -77,7 +77,7 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
           })}
         </div>
 
-        <p className="text-white/20 text-xs tracking-wide text-center">
+        <p className="text-white/20 text-xs tracking-wide text-center [word-break:keep-all]">
           {bombs.length === 0 ? t('bombs.empty') : t('bombs.hint')}
         </p>
 
@@ -98,7 +98,7 @@ export default function BombInventory({ bombs, newBombEmotions = [], onClose }: 
                 {t(`bombs.${selected}.name`)}
               </span>
             </div>
-            <p className="text-white/65 text-sm leading-relaxed">
+            <p className="text-white/65 text-sm leading-relaxed [word-break:keep-all]">
               {t(`bombs.${selected}.description`)}
             </p>
           </motion.div>
