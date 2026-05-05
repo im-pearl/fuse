@@ -57,13 +57,18 @@ const FADE = {
 
 function EndScreen() {
   const [phase, setPhase] = useState<'gameOver' | 'final'>('gameOver');
+  const [showButtons, setShowButtons] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const reset = useGameStore((s) => s.reset);
   const { t } = useTranslation();
 
   useEffect(() => {
-    const timer = setTimeout(() => setPhase('final'), 5000);
-    return () => clearTimeout(timer);
+    const t1 = setTimeout(() => setPhase('final'), 4000);
+    const t2 = setTimeout(() => setShowButtons(true), 4800);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
 
   const handleShare = async () => {
@@ -93,18 +98,18 @@ function EndScreen() {
   };
 
   return (
-    <div className="relative flex flex-col items-center gap-6 w-full">
+    <div className="relative flex flex-col items-center w-full">
       {/* 엔딩 애니메이션 (고정) */}
       <video
         src="/assets/animation/ending.mp4"
         autoPlay
         muted
         playsInline
-        className="w-[200px] aspect-square object-cover"
+        className="w-[160px] aspect-square object-cover mb-2"
       />
 
       {/* 상단 슬롯: GAME OVER ↔ 터지기 전에 녹이세요 */}
-      <div className="relative w-full h-12 flex items-center justify-center">
+      <div className="relative w-full h-12 flex items-center justify-center mb-6">
         <AnimatePresence>
           {phase === 'gameOver' ? (
             <motion.p
@@ -117,7 +122,7 @@ function EndScreen() {
           ) : (
             <motion.p
               key="meltLine"
-              className="absolute text-white text-base text-center [word-break:keep-all]"
+              className="absolute text-white text-lg text-center [word-break:keep-all]"
               {...FADE}
             >
               {t('ending.screen3.line1')}
@@ -129,7 +134,7 @@ function EndScreen() {
       {/* 하단 슬롯: YOUR FEELINGS ARE NOT CLEARED ↔ 버튼들 */}
       <div className="relative w-full h-10 flex items-center justify-center">
         <AnimatePresence>
-          {phase === 'gameOver' ? (
+          {phase === 'gameOver' && (
             <motion.p
               key="cleared"
               className="absolute text-white/50 text-xs tracking-widest text-center"
@@ -137,11 +142,15 @@ function EndScreen() {
             >
               {t('ending.screen2.line2')}
             </motion.p>
-          ) : (
+          )}
+          {phase === 'final' && showButtons && (
             <motion.div
               key="buttons"
               className="absolute flex items-center gap-3"
-              {...FADE}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
             >
               <button
                 onClick={() => window.open(MELT_URL, '_blank', 'noopener,noreferrer')}
