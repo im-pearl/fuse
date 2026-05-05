@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from '@/i18n/useTranslation';
+import StudioCredit from '@/components/ui/StudioCredit';
 
 export default function LanguageSelect() {
   const [surname, setSurname] = useState('');
@@ -24,6 +25,7 @@ export default function LanguageSelect() {
   };
 
   return (
+    <>
     <motion.div
       className="flex flex-col items-center justify-center h-full gap-10 px-8"
       initial={{ opacity: 0 }}
@@ -98,5 +100,7 @@ export default function LanguageSelect() {
         {t('nameInput.confirm')}
       </button>
     </motion.div>
+    <StudioCredit variant="presented" />
+    </>
   );
 }

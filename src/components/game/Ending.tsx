@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import { useGameStore } from '@/store/gameStore';
 import { useTranslation } from '@/i18n/useTranslation';
+import StudioCredit from '@/components/ui/StudioCredit';
 
 function generateCode(seed: string): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -23,27 +24,17 @@ function generateCode(seed: string): string {
 function ScreenContent({
   lines,
   lineDelay = 1200,
-  simultaneous = false,
-  holdDuration = 1800,
-  fadeOnly = false,
   getLineClass,
   onComplete,
 }: {
   lines: string[];
   lineDelay?: number;
-  simultaneous?: boolean;
-  holdDuration?: number;
-  fadeOnly?: boolean;
   getLineClass: (i: number) => string;
   onComplete: () => void;
 }) {
-  const [lineIndex, setLineIndex] = useState(simultaneous ? lines.length : 0);
+  const [lineIndex, setLineIndex] = useState(0);
 
   useEffect(() => {
-    if (simultaneous) {
-      const timer = setTimeout(onComplete, holdDuration);
-      return () => clearTimeout(timer);
-    }
     if (lineIndex < lines.length) {
       const timer = setTimeout(() => setLineIndex((i) => i + 1), lineDelay);
       return () => clearTimeout(timer);
@@ -59,8 +50,8 @@ function ScreenContent({
         <motion.p
           key={i}
           className={`text-center leading-relaxed ${getLineClass(i)}`}
-          initial={fadeOnly ? { opacity: 0 } : { opacity: 0, y: 8 }}
-          animate={fadeOnly ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           {line}
@@ -92,7 +83,15 @@ function CodeModal({ code, onClose }: { code: string; onClose: () => void }) {
   );
 }
 
-function FinalScreen({ onComplete }: { onComplete: () => void }) {
+const FADE = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.6 },
+};
+
+function EndScreen() {
+  const [phase, setPhase] = useState<'gameOver' | 'final'>('gameOver');
   const [showCode, setShowCode] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const reset = useGameStore((s) => s.reset);
@@ -104,7 +103,10 @@ function FinalScreen({ onComplete }: { onComplete: () => void }) {
     return generateCode(seed || String(Date.now()));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => { onComplete(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const timer = setTimeout(() => setPhase('final'), 1800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleShare = async () => {
     const url = window.location.origin;
@@ -134,44 +136,75 @@ function FinalScreen({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="relative flex flex-col items-center gap-8 w-full">
-      <motion.div
-        className="flex flex-col items-center gap-8 w-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <p className="text-white text-base text-center">
-          {t('ending.screen3.line1')}
-        </p>
+      {/* 상단 슬롯: GAME OVER ↔ 터지기 전에 녹이세요 */}
+      <div className="relative w-full h-12 flex items-center justify-center">
+        <AnimatePresence>
+          {phase === 'gameOver' ? (
+            <motion.p
+              key="gameOver"
+              className="absolute text-red-400 text-3xl font-bold tracking-widest text-center"
+              {...FADE}
+            >
+              {t('ending.screen2.line1')}
+            </motion.p>
+          ) : (
+            <motion.p
+              key="meltLine"
+              className="absolute text-white text-base text-center"
+              {...FADE}
+            >
+              {t('ending.screen3.line1')}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowCode(true)}
-            className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
-          >
-            {t('ending.melt')}
-          </button>
-          <button
-            onClick={reset}
-            className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
-          >
-            {t('ending.restart')}
-          </button>
-          <button
-            onClick={handleShare}
-            className="w-9 h-9 flex items-center justify-center border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors"
-            aria-label="share"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="13" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-              <circle cx="13" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-              <circle cx="3" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-              <line x1="4.3" y1="7.3" x2="11.7" y2="3.7" stroke="currentColor" strokeWidth="1.3"/>
-              <line x1="4.3" y1="8.7" x2="11.7" y2="12.3" stroke="currentColor" strokeWidth="1.3"/>
-            </svg>
-          </button>
-        </div>
-      </motion.div>
+      {/* 하단 슬롯: YOUR FEELINGS ARE NOT CLEARED ↔ 버튼들 */}
+      <div className="relative w-full h-10 flex items-center justify-center">
+        <AnimatePresence>
+          {phase === 'gameOver' ? (
+            <motion.p
+              key="cleared"
+              className="absolute text-white/50 text-xs tracking-widest text-center"
+              {...FADE}
+            >
+              {t('ending.screen2.line2')}
+            </motion.p>
+          ) : (
+            <motion.div
+              key="buttons"
+              className="absolute flex items-center gap-3"
+              {...FADE}
+            >
+              <button
+                onClick={() => setShowCode(true)}
+                className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
+              >
+                {t('ending.melt')}
+              </button>
+              <button
+                onClick={reset}
+                className="px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors text-xs"
+              >
+                {t('ending.restart')}
+              </button>
+              <button
+                onClick={handleShare}
+                className="w-9 h-9 flex items-center justify-center border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors"
+                aria-label="share"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="13" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                  <circle cx="13" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                  <circle cx="3" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
+                  <line x1="4.3" y1="7.3" x2="11.7" y2="3.7" stroke="currentColor" strokeWidth="1.3"/>
+                  <line x1="4.3" y1="8.7" x2="11.7" y2="12.3" stroke="currentColor" strokeWidth="1.3"/>
+                </svg>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <AnimatePresence>
         {showCode && <CodeModal code={code} onClose={() => setShowCode(false)} />}
@@ -195,57 +228,53 @@ function FinalScreen({ onComplete }: { onComplete: () => void }) {
 }
 
 export default function Ending() {
-  const [screen, setScreen] = useState(0);
+  const [showEnd, setShowEnd] = useState(false);
   const { t } = useTranslation();
 
-  const screens = [
-    {
-      lines: [t('ending.screen1.line1'), t('ending.screen1.line2'), t('ending.screen1.line3')],
-      lineDelay: 1000,
-      getLineClass: () => 'text-white/90 text-lg font-light tracking-wide',
-    },
-    {
-      lines: [t('ending.screen2.line1'), t('ending.screen2.line2')],
-      simultaneous: true,
-      fadeOnly: true,
-      getLineClass: (i: number) =>
-        i === 0 ? 'text-red-400 text-3xl font-bold tracking-widest' : 'text-white/50 text-xs tracking-widest',
-    },
+  const screen1Lines = [
+    t('ending.screen1.line1'),
+    t('ending.screen1.line2'),
+    t('ending.screen1.line3'),
   ];
 
-  const handleScreenComplete = () => {
-    if (screen < screens.length - 1) {
-      setTimeout(() => setScreen((s) => s + 1), 800);
-    } else {
-      setTimeout(() => setScreen(screens.length), 800);
-    }
+  const handleScreen1Complete = () => {
+    setTimeout(() => setShowEnd(true), 800);
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-8">
       <AnimatePresence mode="wait">
-        <motion.div
-          key={screen}
-          className="flex flex-col items-center gap-5 w-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          {screen < screens.length ? (
+        {!showEnd ? (
+          <motion.div
+            key="s1"
+            className="flex flex-col items-center gap-5 w-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <ScreenContent
-              lines={screens[screen].lines}
-              lineDelay={screens[screen].lineDelay}
-              simultaneous={screens[screen].simultaneous}
-              fadeOnly={screens[screen].fadeOnly}
-              getLineClass={screens[screen].getLineClass}
-              onComplete={handleScreenComplete}
+              lines={screen1Lines}
+              lineDelay={1000}
+              getLineClass={() => 'text-white/90 text-lg font-light tracking-wide'}
+              onComplete={handleScreen1Complete}
             />
-          ) : (
-            <FinalScreen onComplete={() => {}} />
-          )}
-        </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="end"
+            className="w-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <EndScreen />
+          </motion.div>
+        )}
       </AnimatePresence>
+
+      <StudioCredit />
     </div>
   );
 }

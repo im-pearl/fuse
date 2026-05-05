@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
+import StudioCredit from '@/components/ui/StudioCredit';
 
 const FRAMES = Array.from({ length: 10 }, (_, i) => `/assets/explosion/Circle_explosion${i + 1}.png`);
 
@@ -94,6 +95,7 @@ export default function GameOver() {
         )}
       </AnimatePresence>
 
+      <StudioCredit />
     </div>
   );
 }
