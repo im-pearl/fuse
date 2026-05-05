@@ -58,7 +58,6 @@ const FADE = {
 function EndScreen() {
   const [phase, setPhase] = useState<'gameOver' | 'final'>('gameOver');
   const [showButtons, setShowButtons] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const reset = useGameStore((s) => s.reset);
   const { t } = useTranslation();
 
@@ -70,32 +69,6 @@ function EndScreen() {
       clearTimeout(t2);
     };
   }, []);
-
-  const handleShare = async () => {
-    const url = window.location.origin;
-    const shareData = {
-      title: t('title'),
-      text: t('subtitle'),
-      url,
-    };
-
-    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
-      try {
-        await navigator.share(shareData);
-        return;
-      } catch (err) {
-        if ((err as Error)?.name === 'AbortError') return;
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(`${shareData.text} ${url}`);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 1800);
-    } catch {
-      // ignore
-    }
-  };
 
   return (
     <div className="relative flex flex-col items-center w-full">
@@ -164,37 +137,10 @@ function EndScreen() {
               >
                 {t('ending.restart')}
               </button>
-              <button
-                onClick={handleShare}
-                className="w-9 h-9 flex items-center justify-center border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors"
-                aria-label="share"
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <circle cx="13" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-                  <circle cx="13" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-                  <circle cx="3" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.3"/>
-                  <line x1="4.3" y1="7.3" x2="11.7" y2="3.7" stroke="currentColor" strokeWidth="1.3"/>
-                  <line x1="4.3" y1="8.7" x2="11.7" y2="12.3" stroke="currentColor" strokeWidth="1.3"/>
-                </svg>
-              </button>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/10 border border-white/20 rounded text-white/80 text-xs whitespace-nowrap"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            {t('ending.linkCopied')}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
